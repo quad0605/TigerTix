@@ -1,0 +1,25 @@
+{
+  "name": "tigertix-backend",
+  "version": "1.0.0",
+  "description": "TigerTix Backend - Microservices Architecture",
+  "scripts": {
+    "install-all": "cd admin-service && npm install && cd ../client-service && npm install",
+    "setup-db": "cd admin-service && npm run setup-db",
+    "start-admin": "cd admin-service && npm start",
+    "start-client": "cd client-service && npm start",
+    "dev-admin": "cd admin-service && npm run dev",
+    "dev-client": "cd client-service && npm run dev",
+    "start-all": "concurrently \"npm run start-admin\" \"npm run start-client\"",
+    "dev-all": "concurrently \"npm run dev-admin\" \"npm run dev-client\""
+  },
+  "keywords": ["tigertix", "backend", "microservices", "events", "tickets"],
+  "author": "TigerTix Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "workspaces": [
+    "admin-service",
+    "client-service"
+  ]
+}

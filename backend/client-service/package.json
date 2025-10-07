@@ -1,0 +1,24 @@
+{
+  "name": "tigertix-client-service",
+  "version": "1.0.0",
+  "description": "TigerTix Client Service - Handles ticket browsing and purchases",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": ["tigertix", "client", "microservice", "tickets", "purchase"],
+  "author": "TigerTix Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
