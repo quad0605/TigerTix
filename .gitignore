@@ -2,7 +2,7 @@
 node_modules/
 */node_modules/
 
-# Database files (optional - you might want to keep the schema but not the actual data)
+# Database files 
 backend/shared-db/database.sqlite
 
 # Logs
