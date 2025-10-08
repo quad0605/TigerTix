@@ -14,10 +14,10 @@ function createEvent({ name, date, tickets_total }) {
 
     //placeholder SQL
     const sql = `
-      INSERT INTO events (name, date, tickets_total)
-      VALUES (?, ?, ?)
+      INSERT INTO events (name, date, tickets_total, tickets_available)
+      VALUES (?, ?, ?, ?)
     `;
-    const values = [name, date, tickets_total];
+    const values = [name, date, tickets_total, tickets_total];
 
     //runs sql insert
     db.run(sql, values, function (err) {
@@ -29,7 +29,7 @@ function createEvent({ name, date, tickets_total }) {
       const newId = this.lastID;
       //retrieves the new event by its id
       db.get(
-        `SELECT id, name, date, tickets_total
+        `SELECT id, name, date, tickets_total, tickets_available
            FROM events WHERE id = ?`,
         [newId],
         (err2, row) => {
