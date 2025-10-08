@@ -1,14 +1,17 @@
-const { createEvent, getAllEvents } = require('../models/adminModel');
+//import create event function from model
+const { createEvent } = require('../models/adminModel');
 
+//validates date input
 function isValidISODate(s) {
   return !isNaN(Date.parse(s));
 }
 
+//handles post request, ensures fields are not empty, calls model to create event
 async function postCreateEvent(req, res, next) {
   try {
     const { name, date, tickets_total } = req.body;
 
-    // Validation (rubric 1.1 + 1.3)
+    //Validation strings and numbers not null or empty
     if (typeof name !== 'string' || !name.trim()) {
       return res.status(400).json({ error: 'name is required (non-empty string)' });
     }
@@ -22,8 +25,10 @@ async function postCreateEvent(req, res, next) {
 
     const event = await createEvent({ name: name.trim(), date, tickets_total: total });
     return res.status(201).json(event);
-  } catch (err) {
-    next(err); // 500 handler in server.js
+  } 
+  // 500 handler in server.js
+  catch (err) {
+    next(err); 
   }
 }
 
