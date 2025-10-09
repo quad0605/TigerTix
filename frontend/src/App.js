@@ -1,60 +1,49 @@
+// src/App.js
+import React, { useEffect, useState } from "react";
 
-import React, { useState } from 'react';
-import './App.css';
-import EventList from './components/EventList';
-import TicketSelection from './components/TicketSelection';
-import PurchaseConfirmation from './components/PurchaseConfirmation';
+export default function App() {
+  const [events, setEvents] = useState([]);
 
-function App() {
-  const [currentView, setCurrentView] = useState('events'); // 'events', 'tickets', 'confirmation'
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [purchaseData, setPurchaseData] = useState(null);
+  // Load events from client-service on mount
+  useEffect(() => {
+    fetch("/api/events")
+      .then((r) => r.json())
+      .then((data) => setEvents(Array.isArray(data) ? data : []))
+      .catch((e) => console.error("GET /api/events failed", e));
+  }, []);
 
-  const handleEventSelect = (event) => {
-    setSelectedEvent(event);
-    setCurrentView('tickets');
-  };
-
-  const handleBackToEvents = () => {
-    setCurrentView('events');
-    setSelectedEvent(null);
-    setPurchaseData(null);
-  };
-
-  const handlePurchaseComplete = (data) => {
-    setPurchaseData(data);
-    setCurrentView('confirmation');
-  };
+  // Buy one ticket, then update the row in place
+  async function buy(id) {
+    const res = await fetch(`/api/events/${id}/purchase`, { method: "POST" });
+    if (!res.ok) {
+      console.error("purchase failed", res.status);
+      return;
+    }
+    const { event } = await res.json(); // controller returns { message, event }
+    setEvents((prev) => prev.map((e) => (e.id === event.id ? event : e)));
+  }
 
   return (
-    <div className="App">
-      <header className="app-header">
-        <h1>🐅 TigerTix - Princeton Event Tickets</h1>
-        <p>Your gateway to Princeton University events</p>
-      </header>
-
-      <main className="app-content">
-        {currentView === 'events' && (
-          <EventList onEventSelect={handleEventSelect} />
-        )}
-        
-        {currentView === 'tickets' && (
-          <TicketSelection 
-            event={selectedEvent}
-            onBack={handleBackToEvents}
-            onPurchaseComplete={handlePurchaseComplete}
-          />
-        )}
-        
-        {currentView === 'confirmation' && (
-          <PurchaseConfirmation 
-            purchaseData={purchaseData}
-            onBackToEvents={handleBackToEvents}
-          />
-        )}
-      </main>
+    <div>
+      <h1>TigerTix</h1>
+      {events.length === 0 ? (
+        <p>No events yet.</p>
+      ) : (
+        <ul>
+          {events.map((e) => (
+            <li key={e.id}>
+              {e.name} — {new Date(e.date).toLocaleString()} — available: {e.tickets_available}
+              <button
+                onClick={() => buy(e.id)}
+                disabled={e.tickets_available <= 0}
+                style={{ marginLeft: 8 }}
+              >
+                {e.tickets_available <= 0 ? "Sold Out" : "Buy Ticket"}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
-
-export default App;
