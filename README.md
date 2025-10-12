@@ -55,26 +55,34 @@ TigerTix/
 ### Admin Service (Port 5001)
 - `POST /api/admin/events` - Create new event
 - Example curl command:
--     curl -i -X POST http://localhost:5001/api/admin/events -H "Content-Type: application/json" -d '{
+```
+curl -i -X POST http://localhost:5001/api/admin/events -H "Content-Type: application/json" -d '{
         "name":  "Clemson vs. Gamecocks",
         "date": "2025-10-13T19:00:00Z",
         "tickets_total": "190"
-      }'
+}'
+```
 - `PUT /api/admin/events/:id` - Update event
 - Example curl command:
-- `curl -i -X PUT http://localhost:5001/api/admin/events/1 -H "Content-Type: application/json" -d '{
+```
+curl -i -X PUT http://localhost:5001/api/admin/events/1 -H "Content-Type: application/json" -d '{
         "name":  "Epic football game",
         "date": "2025-10-13T19:00:00Z",
         "tickets_total": "190"
-      }'`
+}'
+```
 
 ### Client Service (Port 6001)
 - `GET /api/events` - Get available events
 - Example curl command:
--     'curl -i http://localhost:6001/api/events'
+```
+curl -i http://localhost:6001/api/events
+```
 - `POST /api/events/:id/purchase` - Purchase tickets
 - Example curl command:
--     'curl -X POST -i http://localhost:6001/api/events/2/purchase'
+```
+curl -X POST -i http://localhost:6001/api/events/2/purchase
+```
 
 ## Database Schema
 
