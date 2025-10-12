@@ -7,7 +7,7 @@ TigerTix is a microservices-based event ticketing system for Clemson University 
 
 ### Backend (Microservices)
 - **Admin Service** (Port 5001): Event and ticket management
-- **Client Service** (Port 5002): Event browsing and ticket purchasing
+- **Client Service** (Port 6001): Event browsing and ticket purchasing
 - **Shared Database**: SQLite database shared between services
 
 ### Frontend
@@ -40,11 +40,12 @@ TigerTix/
     ├── public/
     ├── src/
     │   ├── components/
+    │   │   ├── EventItem.js
     │   │   ├── EventList.js
-    │   │   ├── TicketSelection.js
-    │   │   └── PurchaseConfirmation.js
+    │   │   └── Message.js
     │   ├── App.js
     │   └── index.js
+    |   └── index.css
     └── package.json
 ```
 
@@ -52,26 +53,17 @@ TigerTix/
 ## API Endpoints
 
 ### Admin Service (Port 5001)
-- `GET /api/admin/events` - Get all events
 - `POST /api/admin/events` - Create new event
 - `PUT /api/admin/events/:id` - Update event
-- `DELETE /api/admin/events/:id` - Delete event
-- `POST /api/admin/events/:id/tickets` - Generate tickets for event
 
-### Client Service (Port 5002)
-- `GET /api/client/events` - Get available events
-- `GET /api/client/events/:id` - Get event details
-- `GET /api/client/events/:id/tickets` - Get available tickets
-- `POST /api/client/purchase` - Purchase tickets
-- `GET /api/client/orders?email=user@email.com` - Get customer orders
+### Client Service (Port 6001)
+- `GET /api/events` - Get available events
+- `POST /api/events/:id/purchase` - Purchase tickets
 
 ## Database Schema
 
 The application uses SQLite with the following main tables:
-- **events**: Event information (name, date, venue, pricing)
-- **tickets**: Individual ticket records
-- **customers**: Customer information
-- **orders**: Purchase records
+- **events**: Event information (name, date, tickets_total, tickets_sold)
 
 
 4. Test thoroughly
