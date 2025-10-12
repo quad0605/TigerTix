@@ -1,12 +1,24 @@
 //import create event function from model
 const { createEvent, updateEvent } = require('../models/adminModel');
 
-//validates date input
+/**
+ * Validate that a string is a parsable ISO datetime.
+ * @param {string} s - Candidate date string.
+ * @returns {boolean} True if s can be parsed as a Date.
+ */
 function isValidISODate(s) {
   return !isNaN(Date.parse(s));
 }
 
-//handles post request, ensures fields are not empty, calls model to create event
+/**
+ * Handle POST /events - create a new event.
+ * Validates request body (name, date, tickets_total) and delegates to createEvent.
+ *
+ * @param {import('express').Request} req - Express request (body: { name, date, tickets_total }).
+ * @param {import('express').Response} res - Express response.
+ * @param {import('express').NextFunction} next - Express next for error handling.
+ * @returns {Promise<void>} Sends HTTP response or calls next(err) on error.
+ */
 async function postCreateEvent(req, res, next) {
   try {
     const { name, date, tickets_total} = req.body;
@@ -32,7 +44,15 @@ async function postCreateEvent(req, res, next) {
   }
 }
 
-
+/**
+ * Handle POST /events - create a new event.
+ * Validates request body (name, date, tickets_total) and delegates to createEvent.
+ *
+ * @param {import('express').Request} req - Express request (body: { name, date, tickets_total }).
+ * @param {import('express').Response} res - Express response.
+ * @param {import('express').NextFunction} next - Express next for error handling.
+ * @returns {Promise<void>} Sends HTTP response or calls next(err) on error.
+ */
 async function putUpdateEvent(req, res, next) {
   try {
     const id = Number(req.params.id);

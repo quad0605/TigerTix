@@ -3,7 +3,14 @@
 
 const { listEvents, purchaseTicket } = require("../models/clientModel");
 
-
+/**
+ * Handle GET /events
+ * Lists all events available to clients.
+ *
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @returns {Promise<void>} Sends 200 with event array or 500 on error.
+ */
 async function getAllEvents(req, res) {
   try {
     const events = await listEvents();
@@ -14,6 +21,20 @@ async function getAllEvents(req, res) {
   }
 }
 
+/**
+ * Handle POST /events/:id/purchase
+ * Attempts to purchase a ticket for the event with the given id.
+ *
+ * @param {import('express').Request<{ id: string }>} req - params.id must be a positive integer
+ * @param {import('express').Response} res
+ * @returns {Promise<void>} 
+ * Sends:
+ *  - 200 with { message, event } on success
+ *  - 400 for invalid id
+ *  - 404 when event not found
+ *  - 409 when event is sold out
+ *  - 500 on server error
+ */
 async function purchaseTicketHandler(req, res) {
   try {
     const id = Number(req.params.id);

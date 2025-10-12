@@ -5,24 +5,53 @@ const path = require('path');
 //builds path to sqlite database
 const DB_PATH = path.resolve(__dirname, '..', '..', 'shared-db', 'database.sqlite')
 
+/**
+ * Open a new sqlite3 Database connection to the shared DB file.
+ *
+ * Caller is responsible for closing the returned Database when finished.
+ *
+ * @returns {import('sqlite3').Database}
+ */
 function getDb() { return new sqlite3.Database(DB_PATH); }
 
+/**
+ * List all events ordered by date ascending.
+ *
+ * @returns {Promise<Array<{ id: number, name: string, date: string, tickets_total: number, tickets_sold: number }>>}
+ * Returns an array of events, with corresponding descriptive variables.
+ */
 function listEvents() {
-    return new Promise((resolve, reject) => {
-        const db = getDb();
-        db.all(
-            `SELECT id, name, date, tickets_total, tickets_sold
+  return new Promise((resolve, reject) => {
+    const db = getDb();
+    db.all(
+      `SELECT id, name, date, tickets_total, tickets_sold
          FROM events
          ORDER BY date ASC`,
       [],
       (err, rows) => {
         db.close();
-        if(err) return reject(err);
+        if (err) return reject(err);
         resolve(rows || []);
       }
     );
   });
 }
+
+/**
+ * Purchase a ticket for an event (increments tickets_sold if available).
+ *
+ * 
+ *
+ * @param {number} eventId - Event id to purchase a ticket for.
+ * @returns {Promise<
+*     { status: "OK", event: { id:number, name:string, date:string, tickets_total:number, tickets_sold:number } }
+*   | { status: "NOT_FOUND" }
+*   | { status: "SOLD_OUT" }
+* >}  Attempts an atomic update; resolves with:
+* { status: "OK", event }    on success (event is the updated row)
+* { status: "NOT_FOUND" }    if the event id does not exist
+* { status: "SOLD_OUT" }     if the event has no tickets remaining
+*/
 function purchaseTicket(eventId) {
   return new Promise((resolve, reject) => {
     const db = getDb();

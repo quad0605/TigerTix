@@ -3,10 +3,29 @@ import React, { useEffect, useState } from "react";
 import EventList from "./components/EventList";
 import Message from "./components/Message";
 
+
+/**
+ * Main application component for TigerTix.
+ * Handles fetching event data and managing ticket purchases.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered TigerTix application interface.
+ */
 export default function App() {
+
+  /**
+   * List of all events fetched from the backend.
+   * @type {Array<Object>}
+   */
   const [events, setEvents] = useState([]);
+
+  /**
+   * Temporary user message (In this state only purchase confirmation).
+   * @type {string}
+   */
   const [message, setMessage] = useState("");
 
+  // Fetch events on initial mount
   useEffect(() => {
     fetch("/api/events")
       .then((r) => r.json())
@@ -14,6 +33,15 @@ export default function App() {
       .catch((e) => console.error("GET /api/events failed", e));
   }, []);
 
+    /**
+   * Sends a POST request to purchase a ticket for a specific event.
+   * Updates the local event list and shows a confirmation message.
+   *
+   * @async
+   * @function buy
+   * @param {number|string} id - The unique ID of the event being purchased.
+   * @returns {Promise<void>} Resolves when the purchase and UI update complete.
+   */
   async function buy(id) {
     try {
       const res = await fetch(`/api/events/${id}/purchase`, { method: "POST" });
@@ -31,6 +59,7 @@ export default function App() {
     }
   }
 
+  //Render the main app interface
   return (
     <main
       role="main"
