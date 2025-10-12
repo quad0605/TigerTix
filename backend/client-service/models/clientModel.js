@@ -11,7 +11,7 @@ function listEvents() {
     return new Promise((resolve, reject) => {
         const db = getDb();
         db.all(
-            `SELECT id, name, date, tickets_total, tickets_available
+            `SELECT id, name, date, tickets_total, tickets_sold
          FROM events
          ORDER BY date ASC`,
       [],
@@ -30,8 +30,8 @@ function purchaseTicket(eventId) {
     // Try to decrement only if tickets are available
     const sql = `
       UPDATE events
-      SET tickets_available = tickets_available - 1
-      WHERE id = ? AND tickets_available > 0
+      SET tickets_sold = tickets_sold + 1
+      WHERE id = ? AND tickets_sold < tickets_total
     `;
 
     db.run(sql, [eventId], function (err) {
@@ -53,7 +53,7 @@ function purchaseTicket(eventId) {
 
       // Return updated event info
       db.get(
-        `SELECT id, name, date, tickets_total, tickets_available
+        `SELECT id, name, date, tickets_total, tickets_sold
          FROM events WHERE id = ?`,
         [eventId],
         (err3, updatedRow) => {

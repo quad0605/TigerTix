@@ -2,7 +2,7 @@
 import React from "react";
 
 export default function EventItem({ event, onBuy }) {
-  const isSoldOut = event.tickets_available <= 0;
+  const isSoldOut = event.tickets_sold == event.tickets_total;
 
   return (
     <li className="event-card" tabIndex="0">
@@ -23,7 +23,7 @@ export default function EventItem({ event, onBuy }) {
       </p>
 
       <p style={{ margin: "0.25rem 0 1rem" }}>
-        <strong>Tickets available:</strong> {event.tickets_available}
+        <strong>Tickets available:</strong> {event.tickets_total-event.tickets_sold}
       </p>
       <button
         className="buy"

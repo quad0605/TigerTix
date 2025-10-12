@@ -7,17 +7,17 @@ const DB_PATH = path.join(__dirname, '..', '..', 'shared-db', 'database.sqlite')
 
 
 //createEvent function, takes object with name, date, tickets_total, returns a promise 
-function createEvent({ name, date, tickets_total }) {
+function createEvent({ name, date, tickets_total}) {
   return new Promise((resolve, reject) => {
     //open database connection
     const db = new sqlite3.Database(DB_PATH);
 
     //placeholder SQL
     const sql = `
-      INSERT INTO events (name, date, tickets_total, tickets_available)
+      INSERT INTO events (name, date, tickets_total, tickets_sold)
       VALUES (?, ?, ?, ?)
     `;
-    const values = [name, date, tickets_total, tickets_total];
+    const values = [name, date, tickets_total, 0];
 
     //runs sql insert
     db.run(sql, values, function (err) {
@@ -29,7 +29,7 @@ function createEvent({ name, date, tickets_total }) {
       const newId = this.lastID;
       //retrieves the new event by its id
       db.get(
-        `SELECT id, name, date, tickets_total, tickets_available
+        `SELECT id, name, date, tickets_total, tickets_sold
            FROM events WHERE id = ?`,
         [newId],
         (err2, row) => {
@@ -42,4 +42,63 @@ function createEvent({ name, date, tickets_total }) {
   });
 }
 
-module.exports = { createEvent };
+// backend/admin-service/models/adminModel.js
+function updateEvent(id, { name, date, tickets_total }) {
+  return new Promise((resolve, reject) => {
+    const db = new sqlite3.Database(DB_PATH);
+
+    db.get(
+      'SELECT tickets_total AS old_total, tickets_sold AS old_sold FROM events WHERE id = ?',
+      [id],
+      (err, row) => {
+        if (err) {
+          db.close();
+          return reject(err);
+        }
+        if (!row) {
+          db.close();
+          return resolve(null); // not found
+        }
+
+        const oldSold = Number(row.old_sold || 0);
+        const newTotal = Number(tickets_total);
+
+        // Pre-validate against tickets_sold so CHECK constraint is not violated.
+        if (newTotal < oldSold) {
+          db.close();
+          const e = new Error('tickets_total cannot be less than tickets_sold');
+          e.status = 400;
+          return reject(e);
+        }
+
+        const sql =
+          'UPDATE events SET name = ?, date = ?, tickets_total = ? WHERE id = ?';
+        db.run(sql, [name, date, newTotal, id], function (err2) {
+          if (err2) {
+            db.close();
+            // Surface DB constraint errors as 400 for clearer client feedback
+            if (err2.code === 'SQLITE_CONSTRAINT') {
+              const ce = new Error('DB constraint violation: ' + err2.message);
+              ce.status = 400;
+              return reject(ce);
+            }
+            return reject(err2);
+          }
+
+          db.get(
+            'SELECT id, name, date, tickets_total, tickets_sold FROM events WHERE id = ?',
+            [id],
+            (err3, updatedRow) => {
+              db.close();
+              if (err3) return reject(err3);
+              resolve(updatedRow);
+            }
+          );
+        });
+      }
+    );
+  });
+}
+
+
+module.exports = { createEvent, updateEvent };

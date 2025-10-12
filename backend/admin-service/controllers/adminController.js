@@ -1,5 +1,5 @@
 //import create event function from model
-const { createEvent } = require('../models/adminModel');
+const { createEvent, updateEvent } = require('../models/adminModel');
 
 //validates date input
 function isValidISODate(s) {
@@ -9,7 +9,7 @@ function isValidISODate(s) {
 //handles post request, ensures fields are not empty, calls model to create event
 async function postCreateEvent(req, res, next) {
   try {
-    const { name, date, tickets_total } = req.body;
+    const { name, date, tickets_total} = req.body;
 
     //Validation strings and numbers not null or empty
     if (typeof name !== 'string' || !name.trim()) {
@@ -32,4 +32,34 @@ async function postCreateEvent(req, res, next) {
   }
 }
 
-module.exports = { postCreateEvent };
+
+async function putUpdateEvent(req, res, next) {
+  try {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || id <= 0) {
+      return res.status(400).json({ error: 'id must be a positive integer' });
+    }
+
+    const { name, date, tickets_total } = req.body;
+    if (typeof name !== 'string' || !name.trim()) {
+      return res.status(400).json({ error: 'name is required (non-empty string)' });
+    }
+    if (!isValidISODate(date)) {
+      return res.status(400).json({ error: 'date must be a valid ISO datetime string' });
+    }
+    const total = Number(tickets_total);
+    if (!Number.isInteger(total) || total < 0) {
+      return res.status(400).json({ error: 'tickets_total must be an integer >= 0' });
+    }
+
+    const event = await updateEvent(id, { name: name.trim(), date, tickets_total: total });
+    if (!event) return res.status(404).json({ error: 'Event not found' });
+
+    return res.status(200).json(event);
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { postCreateEvent, putUpdateEvent };
+

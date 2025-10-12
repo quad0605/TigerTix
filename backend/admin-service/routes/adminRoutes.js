@@ -1,9 +1,10 @@
+// backend/admin-service/routes/adminRoutes.js
 const express = require('express');
 const router = express.Router();
-const { postCreateEvent } = require('../controllers/adminController');
+const { postCreateEvent, putUpdateEvent } = require('../controllers/adminController');
 
-// listens for post requests to /events
 // full path is /api/admin/events
 router.post('/events', postCreateEvent);
+router.put('/events/:id', putUpdateEvent);
 
 module.exports = router;

@@ -17,8 +17,8 @@ app.use('/api/admin', adminRoutes);
 
 // Centralized error handler
 app.use((err, req, res, next) => {
-  console.error('[Admin Service] ', err);
-  res.status(500).json({ error: 'Internal Server Error' });
+  console.error('[Admin Service] ', err.stack || err);
+  res.status(err.status || 500).json({ error: err.message || 'Internal Server Error' });
 });
 
 // Server start up

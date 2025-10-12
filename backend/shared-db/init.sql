@@ -5,5 +5,5 @@ CREATE TABLE IF NOT EXISTS events (
   name TEXT NOT NULL,
   date TEXT NOT NULL,                   
   tickets_total INTEGER NOT NULL CHECK (tickets_total >= 0),
-  tickets_available INTEGER NOT NULL CHECK (tickets_available >= 0)
+  tickets_sold INTEGER NOT NULL CHECK(tickets_sold >= 0 AND tickets_sold <= tickets_total)
 );
