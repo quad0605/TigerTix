@@ -71,8 +71,10 @@ function purchaseTicket(eventId) {
 
     db.run(sql, [eventId], function (err) {
       if (err) {
+        const ce = new Error('Internal Server error: ' + err.message); 
+        ce.status = 500;
         db.close();
-        return reject(err);
+        return reject(ce);
       }
 
       // If no rows were updated, either sold out or not found

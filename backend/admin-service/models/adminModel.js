@@ -37,8 +37,10 @@ function createEvent({ name, date, tickets_total}) {
     //runs sql insert
     db.run(sql, values, function (err) {
       if (err) {
+        const ce = new Error('Internal Server error: ' + err.message); 
+        ce.status = 500;
         db.close();
-        return reject(err);
+        return reject(ce);
       }
       //generates a key for the new event
       const newId = this.lastID;
@@ -113,7 +115,9 @@ function updateEvent(id, { name, date, tickets_total }) {
               ce.status = 400;
               return reject(ce);
             }
-            return reject(err2);
+            const ce = new Error('Internal Server error: ' + err2.message); 
+            ce.status = 500;
+            return reject(ce);
           }
 
           db.get(
