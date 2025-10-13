@@ -14,9 +14,9 @@ function isValidISODate(s) {
  * Handle POST /events - create a new event.
  * Validates request body (name, date, tickets_total) and delegates to createEvent.
  *
- * @param {import('express').Request} req - Express request (body: { name, date, tickets_total }).
- * @param {import('express').Response} res - Express response.
- * @param {import('express').NextFunction} next - Express next for error handling.
+ * @param {import('express').Request} req - The HTTP request (body: { name, date, tickets_total }).
+ * @param {import('express').Response} res - The HTTP response.
+ * @param {import('express').NextFunction} next - The Express next function for error handling.
  * @returns {Promise<void>} Sends HTTP response or calls next(err) on error.
  */
 async function postCreateEvent(req, res, next) {
@@ -48,9 +48,9 @@ async function postCreateEvent(req, res, next) {
  * Handle POST /events - create a new event.
  * Validates request body (name, date, tickets_total) and delegates to createEvent.
  *
- * @param {import('express').Request} req - Express request (body: { name, date, tickets_total }).
- * @param {import('express').Response} res - Express response.
- * @param {import('express').NextFunction} next - Express next for error handling.
+ * @param {import('express').Request} req - The HTTP request (body: { name, date, tickets_total }).
+ * @param {import('express').Response} res - The HTTP response.
+ * @param {import('express').NextFunction} next - Express next function for error handling.
  * @returns {Promise<void>} Sends HTTP response or calls next(err) on error.
  */
 async function putUpdateEvent(req, res, next) {

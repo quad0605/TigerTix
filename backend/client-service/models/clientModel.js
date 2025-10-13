@@ -17,8 +17,14 @@ function getDb() { return new sqlite3.Database(DB_PATH); }
 /**
  * List all events ordered by date ascending.
  *
- * @returns {Promise<Array<{ id: number, name: string, date: string, tickets_total: number, tickets_sold: number }>>}
- * Returns an array of events, with corresponding descriptive variables.
+ * @returns {Promise<Array<{ 
+ *            id: number, 
+ *            name: string, 
+ *            date: string, 
+ *            tickets_total: number, 
+ *            tickets_sold: number }>>
+ * } Simply returns an array of events(including id, the name, the total tickets, 
+ * and the amount of tickets sold) or nothing 
  */
 function listEvents() {
   return new Promise((resolve, reject) => {
@@ -40,18 +46,18 @@ function listEvents() {
 /**
  * Purchase a ticket for an event (increments tickets_sold if available).
  *
- * 
+
  *
  * @param {number} eventId - Event id to purchase a ticket for.
  * @returns {Promise<
-*     { status: "OK", event: { id:number, name:string, date:string, tickets_total:number, tickets_sold:number } }
-*   | { status: "NOT_FOUND" }
-*   | { status: "SOLD_OUT" }
-* >}  Attempts an atomic update; resolves with:
-* { status: "OK", event }    on success (event is the updated row)
-* { status: "NOT_FOUND" }    if the event id does not exist
-* { status: "SOLD_OUT" }     if the event has no tickets remaining
-*/
+     { status: "OK", event: { id:number, name:string, date:string, tickets_total:number, tickets_sold:number } }
+   | { status: "NOT_FOUND" }
+   | { status: "SOLD_OUT" }
+ >} Attempts an atomic update and resolves with:
+ * { status: "OK", event }    on success (where event is the updated row)
+ * { status: "NOT_FOUND" }    if the event id does not exist
+ * { status: "SOLD_OUT" }     if the event has no tickets remaining
+ */
 function purchaseTicket(eventId) {
   return new Promise((resolve, reject) => {
     const db = getDb();

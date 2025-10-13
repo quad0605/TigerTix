@@ -7,8 +7,8 @@ const { listEvents, purchaseTicket } = require("../models/clientModel");
  * Handle GET /events
  * Lists all events available to clients.
  *
- * @param {import('express').Request} req
- * @param {import('express').Response} res
+ * @param {import('express').Request} req -  The HTTP request 
+ * @param {import('express').Response} res - The HTTP response
  * @returns {Promise<void>} Sends 200 with event array or 500 on error.
  */
 async function getAllEvents(req, res) {
@@ -25,8 +25,8 @@ async function getAllEvents(req, res) {
  * Handle POST /events/:id/purchase
  * Attempts to purchase a ticket for the event with the given id.
  *
- * @param {import('express').Request<{ id: string }>} req - params.id must be a positive integer
- * @param {import('express').Response} res
+ * @param {import('express').Request<{ id: string }>} req - The HTTP request 
+ * @param {import('express').Response} res - The HTTP response
  * @returns {Promise<void>} 
  * Sends:
  *  - 200 with { message, event } on success

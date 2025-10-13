@@ -10,10 +10,17 @@ const DB_PATH = path.join(__dirname, '..', '..', 'shared-db', 'database.sqlite')
  * Create a new event.
  * Inserts a new row into the events table and returns the created row.
  *
- * @param {{ name: string, date: string, tickets_total: number }} event // The values for the new event
+ * @param {
+ * { name: string, date: string, tickets_total: number }
+ * } event The values for the new event
  * @returns {
- *    Promise<{ id: number, name: string, date: string, tickets_total: number, tickets_sold: number }>
- * }// The new event's values including tickets_sold(cannot be changed by admin) 
+ *    Promise<{ 
+ *              id: number, 
+ *              name: string, 
+ *              date: string, 
+ *              tickets_total: number, 
+ *              tickets_sold: number }>
+ * } The new event's values including tickets_sold(cannot be changed by admin) 
  */
 function createEvent({ name, date, tickets_total}) {
   return new Promise((resolve, reject) => {
@@ -59,8 +66,13 @@ function createEvent({ name, date, tickets_total}) {
  * @param {number} id - Event id to update.
  * @param {{ name: string, date: string, tickets_total: number }} data The new event data
  * @returns {
- *    Promise<null | { id: number, name: string, date: string, tickets_total: number, tickets_sold: number }>
- * } // The new event data if event is succefully updated
+ *    Promise<null | { 
+ *                    id: number, 
+ *                    name: string, 
+ *                    date: string, 
+ *                    tickets_total: number, 
+ *                    tickets_sold: number }>
+ * } The new event data if event is succefully updated
  */
 function updateEvent(id, { name, date, tickets_total }) {
   return new Promise((resolve, reject) => {
