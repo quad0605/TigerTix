@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import EventList from "./components/EventList";
 import Message from "./components/Message";
-
+import LLMPanel from "./components/llmPanel";
 
 /**
  * Main application component for TigerTix.
@@ -12,6 +12,9 @@ import Message from "./components/Message";
  * @returns {JSX.Element} The rendered TigerTix application interface.
  */
 export default function App() {
+
+
+
 
   /**
    * List of all events fetched from the backend.
@@ -25,6 +28,7 @@ export default function App() {
    */
   const [message, setMessage] = useState("");
 
+  const [chatMessages, setChatMessages] = useState([]);
   // Fetch events on initial mount
   useEffect(() => {
     fetch("/api/events")
@@ -33,15 +37,15 @@ export default function App() {
       .catch((e) => console.error("GET /api/events failed", e));
   }, []);
 
-    /**
-   * Sends a POST request to purchase a ticket for a specific event.
-   * Updates the local event list and shows a confirmation message.
-   *
-   * @async
-   * @function buy
-   * @param {number|string} id - The unique ID of the event being purchased.
-   * @returns {Promise<void>} Resolves when the purchase and UI update complete.
-   */
+  /**
+ * Sends a POST request to purchase a ticket for a specific event.
+ * Updates the local event list and shows a confirmation message.
+ *
+ * @async
+ * @function buy
+ * @param {number|string} id - The unique ID of the event being purchased.
+ * @returns {Promise<void>} Resolves when the purchase and UI update complete.
+ */
   async function buy(id) {
     try {
       const res = await fetch(`/api/events/${id}/purchase`, { method: "POST" });
@@ -56,6 +60,36 @@ export default function App() {
       setTimeout(() => setMessage(""), 5000);
     } catch (err) {
       console.error("Purchase request failed:", err);
+    }
+  }
+  async function sendMessage(text) {
+    /*const requestOptions = {
+  method: 'POST', // or 'PUT', 'DELETE', etc.
+  headers: {
+    'Content-Type': 'application/json', // Crucial for sending JSON
+    'Accept': 'application/json' // Optional: indicates you expect JSON in return
+  },
+  body: JSON.stringify({
+    text: text,
+  }) // Convert your JavaScript object to a JSON string
+};
+    try {
+      const res = await fetch(`http://localhost:7001/api/llm/parse/`, requestOptions);
+      if (!res.ok) throw new Error("Message failed to send");
+    } catch (err){
+
+      console.error("Message failed to send", err);
+    }
+      */
+    if (text != "") {
+      const newMessage = {
+        text,
+        time: new Date().toLocaleTimeString(),
+        id: chatMessages.length + 1,
+        user: true
+      };
+      setChatMessages((prevMessages) => [...prevMessages, newMessage]);
+
     }
   }
 
@@ -73,6 +107,9 @@ export default function App() {
 
       <Message message={message} />
       <EventList events={events} onBuy={buy} />
+
+      <LLMPanel chatMessages={chatMessages} onSend={sendMessage} />
+
     </main>
   );
 }
