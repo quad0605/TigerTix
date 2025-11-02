@@ -8,6 +8,9 @@
     "dev": "nodemon server.js",
     "setup-db": "node setup.js"
   },
+  "scripts": {
+  "test": "jest"
+},
   "keywords": [
     "tigertix",
     "admin",
@@ -18,12 +21,14 @@
   "author": "TigerTix Team",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
     "cors": "^2.8.5",
-    "sqlite3": "^5.1.6"
+    "express": "^4.18.2"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "jest": "^30.2.0",
+    "nodemon": "^3.0.1",
+    "sqlite3": "^5.1.7",
+    "supertest": "^7.1.4"
   },
   "engines": {
     "node": ">=16.0.0"
