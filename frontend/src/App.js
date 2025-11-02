@@ -63,24 +63,6 @@ export default function App() {
     }
   }
   async function sendMessage(text) {
-    /*const requestOptions = {
-  method: 'POST', // or 'PUT', 'DELETE', etc.
-  headers: {
-    'Content-Type': 'application/json', // Crucial for sending JSON
-    'Accept': 'application/json' // Optional: indicates you expect JSON in return
-  },
-  body: JSON.stringify({
-    text: text,
-  }) // Convert your JavaScript object to a JSON string
-};
-    try {
-      const res = await fetch(`http://localhost:7001/api/llm/parse/`, requestOptions);
-      if (!res.ok) throw new Error("Message failed to send");
-    } catch (err){
-
-      console.error("Message failed to send", err);
-    }
-      */
     if (text != "") {
       const newMessage = {
         text,
@@ -90,7 +72,38 @@ export default function App() {
       };
       setChatMessages((prevMessages) => [...prevMessages, newMessage]);
 
+// This is kindof a simple work around since it doesn't "remember" I'm just resending the entire chat
+const fullConversation = [...chatMessages, newMessage]
+      .map(msg => `${msg.user ? 'User' : 'Bot'}: ${msg.text}`)
+      .join('\n');
+
+      const requestOptions = {
+        method: 'POST', // or 'PUT', 'DELETE', etc.
+        headers: {
+          'Content-Type': 'application/json', // Crucial for sending JSON
+          'Accept': 'application/json' // Optional: indicates you expect JSON in return
+        },
+        body: JSON.stringify({
+          message: fullConversation,
+        }) // Convert your JavaScript object to a JSON string
+      };
+      try {
+        const res = await fetch(`http://localhost:7001/api/llm/chat`, requestOptions);
+        if (!res.ok) throw new Error("Message failed to send");
+        const data = await res.json();
+        const newResponse = {
+          text: data.reply,
+          time: new Date().toLocaleTimeString(),
+          id: chatMessages.length + 1,
+          user: false
+        };
+        setChatMessages((prevMessages) => [...prevMessages, newResponse]);
+      } catch (err) {
+
+        console.error("Message failed to send", err);
+      }
     }
+
   }
 
   //Render the main app interface
