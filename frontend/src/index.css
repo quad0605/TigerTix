@@ -92,25 +92,21 @@ button {
   font-size: 1rem;
   color: white;
   cursor: pointer;
+  background-color: #2563eb;
   transition: background-color 0.2s ease, transform 0.1s ease;
   outline: none;
 }
 
-button:focus-visible {
-  outline: 3px solid #93c5fd;
-  outline-offset: 2px;
-}
+
 
 button:active {
-  transform: scale(0.97);
+  transform: scale(0.90);
 }
 
-/* Button styling for buy */
-button.buy {
-  background-color: #2563eb;
-}
+/* Button styling */
 
-button.buy:hover:not(:disabled) {
+
+button:hover:not(:disabled) {
   background-color: #1d4ed8;
 }
 
@@ -148,7 +144,7 @@ button:disabled {
   bottom: 20px;
   width: var(--panel-width);
   max-width: calc(100% - 40px);
-  height: 560px;
+  height: 600px;
   display: flex;
   flex-direction: column;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
@@ -160,13 +156,33 @@ button:disabled {
   z-index: 1000;
 }
 
-.chat-header {
-  padding: 14px;
+.chat-panel-hidden{
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: var(--panel-width);
+  max-width: calc(100% - 40px);
+  height: 60px;
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+  border-radius: 16px;
+  box-shadow: 0 10px 35px rgba(2, 6, 23, 0.6), 0 1px 0 rgba(255, 255, 255, 0.02) inset;
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  z-index: 1000;
+  
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;  /* keeps inner items vertically centered */
+  justify-content: space-between; /* optional — spreads left and right groups */
+  padding: 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   background: linear-gradient(180deg, rgba(10, 14, 20, 0.4), rgba(0, 0, 0, 0.15));
+
 }
 
 .chat-title {
@@ -288,18 +304,11 @@ textarea.message-input {
 textarea.message-input:focus {
   outline: none;
 }
-
-.send-btn {
-  background: linear-gradient(180deg, var(--accent), #089fb0);
-  border: none;
-  color: black;
-  padding: 8px 12px;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
+#minimizeBtn:hover{
+  background-color: rgba(90, 90, 90, 0.644);
 }
 
-.send-btn:disabled {
-  opacity: 0.45;
-  cursor: default;
+#closeBtn:hover {
+  background-color: rgba(179, 35, 35, 0.651);
+
 }

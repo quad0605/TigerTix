@@ -9,7 +9,9 @@ import VoiceInput from "./VoiceInput";
   TO ADD
 */
 export default function LLMPanel({chatMessages, onSend}) {
+  const [isVisible, setIsVisible] = useState(true);
   const [text, setText] = useState("");
+  
   function handleClick(){
     onSend(text);
     setText("");
@@ -24,18 +26,18 @@ export default function LLMPanel({chatMessages, onSend}) {
 
     
 
-  <aside className="chat-panel" aria-label="Chat panel" id="chatPanel">
-    <header className="chat-header">
+  <aside className={isVisible?'chat-panel':"chat-panel-hidden"} aria-label="Chat panel" id="chatPanel">
+    <div className="chat-header">
       <div>
         <div className="chat-title">Chat</div>
         <div className="chat-sub" id="statusText">Chat with our assistant</div>
       </div>
 
       <div className="controls" role="toolbar" aria-label="Chat controls">
-        <button className="icon-btn" title="Minimize" id="minimizeBtn" aria-pressed="false" aria-label="Minimize chat">—</button>
+        <button className="icon-btn" title="Minimize" id="minimizeBtn" aria-pressed="false" aria-label="Minimize chat" onClick={()=>setIsVisible(!isVisible)}>—</button>
         <button className="icon-btn" id="closeBtn" title="Close" aria-label="Close chat">✕</button>
       </div>
-    </header>
+    </div>
 
     <main className="chat-body" id="chatBody" role="log" aria-live="polite" aria-relevant="additions">
       <MessageList chatMessages={chatMessages}/>
@@ -50,8 +52,8 @@ export default function LLMPanel({chatMessages, onSend}) {
       </div>
       <VoiceInput onRecognized={(text)=>setText(text)}/>
       <button type="button" className="send-btn" id="sendBtn" onClick={()=>handleClick()}>Send</button>
-
     </form>
+    
   </aside>
   );
 
