@@ -26,7 +26,8 @@ beforeEach((done) => {
         INSERT INTO events (name, date, tickets_total, tickets_sold) VALUES
         ('Jazz Night', '2025-11-10', 100, 0),
         ('Rock Concert', '2025-12-01', 50, 0),
-        ('Sold Out Event', '2025-12-05', 25, 25);
+        ('Sold Out Event', '2025-12-05', 25, 25),
+        ('Limited Event', '2025-11-20', 3, 2);
       `, done);
     });
   });
@@ -107,13 +108,13 @@ const app = express();
 app.use(bodyParser.json());
 app.use('/api', clientRoutes);
 
-describe('Simple Client Controller Tests', () => {
+describe('Client Controller Tests', () => {
 
   test('GET /api/events returns list of events', async () => {
     const res = await request(app).get('/api/events');
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
-    expect(res.body).toHaveLength(3);
+    expect(res.body).toHaveLength(4);
   });
 
   test('POST /api/events/:id/purchase buys a ticket successfully', async () => {
@@ -130,6 +131,32 @@ describe('Simple Client Controller Tests', () => {
   test('POST /api/events/:id/purchase returns 409 when sold out', async () => {
     const res = await request(app).post('/api/events/3/purchase');
     expect(res.status).toBe(409);
+  });
+
+  test('handles concurrent purchases without overselling', async () => {
+    const promises = [];
+    for (let i = 0; i < 5; i++) {
+      promises.push(request(app).post('/api/events/4/purchase'));
+    }
+    
+    const results = await Promise.all(promises);
+    const successful = results.filter(res => res.status === 200);
+    const failed = results.filter(res => res.status === 409);
+    
+    expect(successful.length).toBe(1);
+    expect(failed.length).toBe(4);
+    expect(successful[0].body.event.tickets_sold).toBe(3);
+  });
+
+  test('maintains data integrity after multiple operations', async () => {
+    await request(app).post('/api/events/2/purchase');
+    await request(app).post('/api/events/2/purchase');
+    
+    const listRes = await request(app).get('/api/events');
+    const rockConcert = listRes.body.find(event => event.name === 'Rock Concert');
+    
+    expect(rockConcert.tickets_sold).toBe(2);
+    expect(rockConcert.tickets_total).toBe(50);
   });
 
 });
