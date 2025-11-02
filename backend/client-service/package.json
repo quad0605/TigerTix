@@ -16,14 +16,10 @@
   "author": "TigerTix Team",
   "license": "MIT",
   "dependencies": {
-    "cors": "^2.8.5",
-<<<<<<< HEAD
-    "express": "^4.18.2",
-    "sqlite3": "^5.1.6"
-=======
-    "express": "^4.18.2"
->>>>>>> 244d5e2 (Added llm chat functionality)
-  },
+  "cors": "^2.8.5",
+  "express": "^4.18.2",
+  "sqlite3": "^5.1.6"
+},
   "devDependencies": {
     "jest": "^30.2.0",
     "nodemon": "^3.0.1",
