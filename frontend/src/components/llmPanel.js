@@ -6,8 +6,14 @@ import { chatMessageShape } from "./ChatMessage";
 import VoiceInput from "./VoiceInput";
 
 /**
-  TO ADD
-*/
+ * LLMPanel component
+ *
+ * Renders a chat interface for interacting with the AI assistant.
+ * It includes the message list, text input, voice input, and controls for TTS and visibility.
+ * @component
+ * @param {{ chatMessages: Array<chatMessageShape>, onSend: (text: string) => void, toggleTTS: () => void, speechEnabled: boolean }} props
+ * @returns {JSX.Element} A chat panel component.
+ */
 export default function LLMPanel({ chatMessages, onSend, toggleTTS, speechEnabled }) {
   const [isVisible, setIsVisible] = useState(true);
   const [text, setText] = useState("");
