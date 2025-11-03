@@ -11,7 +11,12 @@ const adminRoutes = require('../routes/adminRoutes');
 const TEST_DB_PATH = path.join(__dirname, 'test.sqlite');
 process.env.TEST_DB_PATH = TEST_DB_PATH; // <— add this
 
-// Before each test, recreate DB schema
+/**
+ * Test Setup: Database Reset
+ * Recreates a clean SQLite test database before each test
+ * to ensure test isolation and consistent state
+ * @setup beforeEach - Database Initialization
+ */
 beforeEach((done) => {
   if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH);
   const db = new sqlite3.Database(TEST_DB_PATH);
@@ -58,6 +63,12 @@ app.use((err, req, res, next) => {
 
 describe('Admin Controller Integration', () => {
 
+  /**
+   * Test Case: Create Valid Event
+   * Verifies that the admin service can successfully create a new event
+   * with valid data and returns proper response structure
+   * @test POST /api/admin/events - Event Creation
+   */
   test('POST /api/admin/events creates a valid event', async () => {
     const res = await request(app)
       .post('/api/admin/events')
@@ -74,6 +85,12 @@ describe('Admin Controller Integration', () => {
     expect(res.body.tickets_sold).toBe(0);
   });
 
+  /**
+   * Test Case: Invalid Date Validation
+   * Ensures that event creation fails with proper error message
+   * when provided with malformed date string
+   * @test POST /api/admin/events - Input Validation
+   */
   test('POST /api/admin/events rejects invalid date', async () => {
     const res = await request(app)
       .post('/api/admin/events')
@@ -87,6 +104,12 @@ describe('Admin Controller Integration', () => {
     expect(res.body.error).toMatch(/date must be a valid ISO/);
   });
 
+  /**
+   * Test Case: Update Existing Event
+   * Verifies that admin can successfully update an existing event's
+   * properties (name, date, ticket total) via PUT request
+   * @test PUT /api/admin/events/:id - Event Modification
+   */
   test('PUT /api/admin/events/:id updates an event', async () => {
     // Create event first
     const created = await request(app)
@@ -112,6 +135,12 @@ describe('Admin Controller Integration', () => {
     expect(res.body.tickets_total).toBe(75);
   });
 
+  /**
+   * Test Case: Update Non-existent Event
+   * Confirms that attempting to update an event with invalid ID
+   * returns 404 error with appropriate error message
+   * @test PUT /api/admin/events/:id - Error Handling
+   */
   test('PUT /api/admin/events/:id returns 404 for missing id', async () => {
     const res = await request(app)
       .put('/api/admin/events/999')

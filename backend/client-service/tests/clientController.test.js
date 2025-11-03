@@ -9,6 +9,12 @@ const clientRoutes = require('../routes/clientRoutes');
 
 const TEST_DB_PATH = path.join(__dirname, 'test_simple.sqlite');
 
+/**
+ * Test Setup: Database Reset with Sample Events
+ * Recreates test database with sample events before each test
+ * to ensure consistent state for client service testing
+ * @setup beforeEach - Database Initialization
+ */
 beforeEach((done) => {
   if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH);
   const db = new sqlite3.Database(TEST_DB_PATH);
@@ -134,22 +140,15 @@ app.use(bodyParser.json());
 app.use('/api', clientRoutes);
 
 
-/**
- * Integration test suite for Client Controller API endpoints.
- * 
- * @description Tests the complete client-service functionality including:
- * - Event listing endpoint (GET /api/events)
- * - Ticket purchasing endpoint (POST /api/events/:id/purchase)
- * - Error handling for various edge cases
- * - Database consistency and concurrency scenarios
- * - Data integrity after multiple operations
- * 
- * @requires supertest For HTTP endpoint testing
- * @requires jest For test framework and mocking
- * @requires sqlite3 For test database operations
- */
+
 describe('Client Controller Tests', () => {
 
+  /**
+   * Test Case: Event Listing Retrieval
+   * Verifies that the client service returns a complete list of events
+   * in proper format with correct data structure
+   * @test GET /api/events - Event Listing
+   */
   test('GET /api/events returns list of events', async () => {
     const res = await request(app).get('/api/events');
     expect(res.status).toBe(200);
@@ -157,22 +156,46 @@ describe('Client Controller Tests', () => {
     expect(res.body).toHaveLength(4);
   });
 
+  /**
+   * Test Case: Successful Ticket Purchase
+   * Confirms that valid ticket purchases increment sold count
+   * and return updated event information correctly
+   * @test POST /api/events/:id/purchase - Ticket Purchase
+   */
   test('POST /api/events/:id/purchase buys a ticket successfully', async () => {
     const res = await request(app).post('/api/events/1/purchase');
     expect(res.status).toBe(200);
     expect(res.body.event).toHaveProperty('tickets_sold', 1);
   });
 
+  /**
+   * Test Case: Non-existent Event Purchase Attempt
+   * Ensures that purchase attempts for invalid event IDs
+   * return appropriate 404 error response
+   * @test POST /api/events/:id/purchase - Error Handling
+   */
   test('POST /api/events/:id/purchase returns 404 for missing event', async () => {
     const res = await request(app).post('/api/events/999/purchase');
     expect(res.status).toBe(404);
   });
 
+  /**
+   * Test Case: Sold Out Event Purchase Attempt
+   * Verifies that attempts to purchase tickets for sold out events
+   * return proper 409 conflict status code
+   * @test POST /api/events/:id/purchase - Inventory Management
+   */
   test('POST /api/events/:id/purchase returns 409 when sold out', async () => {
     const res = await request(app).post('/api/events/3/purchase');
     expect(res.status).toBe(409);
   });
 
+  /**
+   * Test Case: Concurrent Purchase Protection
+   * Tests that simultaneous purchase attempts don't cause overselling
+   * by validating atomic database operations and race condition handling
+   * @test POST /api/events/:id/purchase - Concurrency Control
+   */
   test('handles concurrent purchases without overselling', async () => {
     const promises = [];
     for (let i = 0; i < 5; i++) {
@@ -188,6 +211,12 @@ describe('Client Controller Tests', () => {
     expect(successful[0].body.event.tickets_sold).toBe(3);
   });
 
+  /**
+   * Test Case: Data Integrity Verification
+   * Confirms that multiple sequential operations maintain correct
+   * database state and ticket counts remain accurate
+   * @test Multiple Operations - Data Consistency
+   */
   test('maintains data integrity after multiple operations', async () => {
     await request(app).post('/api/events/2/purchase');
     await request(app).post('/api/events/2/purchase');

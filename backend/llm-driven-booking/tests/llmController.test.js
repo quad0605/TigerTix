@@ -9,6 +9,12 @@ const llmRoutes = require('../routes/llmRoute');
 
 const TEST_DB_PATH = path.join(__dirname, 'test_llm.sqlite');
 
+/**
+ * Test Setup: Database and Test Data Initialization
+ * Creates fresh test database with sample events before each test
+ * to ensure consistent state for LLM booking functionality
+ * @setup beforeEach - Database Reset with Sample Data
+ */
 beforeEach((done) => {
   if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH);
   const db = new sqlite3.Database(TEST_DB_PATH);
@@ -63,6 +69,12 @@ app.use('/api/llm', llmRoutes);
 
 describe('LLM Controller Tests', () => {
 
+  /**
+   * Test Case: Natural Language Parsing Success
+   * Verifies that the LLM service can successfully parse natural language
+   * booking requests and extract event name and ticket quantity
+   * @test POST /api/llm/parse - NLP Processing
+   */
   test('POST /api/llm/parse successfully parses natural language input', async () => {
     const res = await request(app)
       .post('/api/llm/parse')
@@ -74,6 +86,12 @@ describe('LLM Controller Tests', () => {
     expect(res.body.match.name).toBe('Jazz Night');
   });
 
+  /**
+   * Test Case: Missing Input Validation
+   * Ensures that parse endpoint returns proper error when no text
+   * input is provided in the request body
+   * @test POST /api/llm/parse - Input Validation
+   */
   test('POST /api/llm/parse returns 400 for missing text', async () => {
     const res = await request(app)
       .post('/api/llm/parse')
@@ -83,6 +101,12 @@ describe('LLM Controller Tests', () => {
     expect(res.body.error).toMatch(/missing text input/i);
   });
 
+  /**
+   * Test Case: Successful Ticket Booking
+   * Verifies that the LLM service can successfully process ticket
+   * purchases and update database with correct ticket counts
+   * @test POST /api/llm/confirm - Booking Confirmation
+   */
   test('POST /api/llm/confirm successfully books tickets', async () => {
     const res = await request(app)
       .post('/api/llm/confirm')
@@ -93,6 +117,12 @@ describe('LLM Controller Tests', () => {
     expect(res.body.updated.tickets_sold).toBe(12);
   });
 
+  /**
+   * Test Case: Invalid Ticket Quantity Validation
+   * Confirms that booking confirmation fails with proper error
+   * when ticket quantity is not a valid positive integer
+   * @test POST /api/llm/confirm - Input Validation
+   */
   test('POST /api/llm/confirm returns 400 for invalid input', async () => {
     const res = await request(app)
       .post('/api/llm/confirm')
@@ -102,6 +132,12 @@ describe('LLM Controller Tests', () => {
     expect(res.body.error).toMatch(/tickets.*must be.*positive integer/i);
   });
 
+  /**
+   * Test Case: Non-existent Event Handling
+   * Verifies that booking attempts for events that don't exist
+   * return appropriate 404 error with descriptive message
+   * @test POST /api/llm/confirm - Error Handling
+   */
   test('POST /api/llm/confirm returns 404 for non-existent event', async () => {
     const res = await request(app)
       .post('/api/llm/confirm')
@@ -111,6 +147,12 @@ describe('LLM Controller Tests', () => {
     expect(res.body.error).toMatch(/event not found/i);
   });
 
+  /**
+   * Test Case: Sold Out Event Handling
+   * Ensures that booking attempts for sold out events return
+   * proper 409 conflict error indicating insufficient tickets
+   * @test POST /api/llm/confirm - Inventory Management
+   */
   test('POST /api/llm/confirm returns 409 for sold out event', async () => {
     const res = await request(app)
       .post('/api/llm/confirm')
