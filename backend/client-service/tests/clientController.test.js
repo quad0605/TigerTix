@@ -38,10 +38,24 @@ jest.mock('../models/clientModel', () => {
   const path = require('path');
   const TEST_DB = path.join(__dirname, 'test_simple.sqlite');
   
+  /**
+ * Creates a connection to the test SQLite database.
+ * 
+ * @function getTestDb
+ * @returns {sqlite3.Database} SQLite database connection to test database
+ */
   function getTestDb() {
     return new sqlite3.Database(TEST_DB);
   }
 
+  /**
+ * Mock implementation of listEvents function for testing.
+ * Queries the test database and returns all events ordered by date.
+ * 
+ * @function listEvents
+ * @returns {Promise<Array<Object>>} Promise resolving to array of event objects
+ * @throws {Error} Database connection or query errors
+ */
   function listEvents() {
     return new Promise((resolve, reject) => {
       const db = getTestDb();
@@ -58,7 +72,18 @@ jest.mock('../models/clientModel', () => {
       );
     });
   }
-
+/**
+ * Mock implementation of purchaseTicket function for testing.
+ * Atomically increments tickets_sold for specified event if tickets available.
+ * 
+ * @function purchaseTicket
+ * @param {number} eventId - ID of the event to purchase ticket for
+ * @returns {Promise<Object>} Promise resolving to purchase result object
+ * @returns {Promise<{status: "OK", event: Object}>} On successful purchase
+ * @returns {Promise<{status: "NOT_FOUND"}>} When event ID doesn't exist
+ * @returns {Promise<{status: "SOLD_OUT"}>} When no tickets remaining
+ * @throws {Error} Database connection or query errors
+ */
   function purchaseTicket(eventId) {
     return new Promise((resolve, reject) => {
       const db = getTestDb();
@@ -108,6 +133,21 @@ const app = express();
 app.use(bodyParser.json());
 app.use('/api', clientRoutes);
 
+
+/**
+ * Integration test suite for Client Controller API endpoints.
+ * 
+ * @description Tests the complete client-service functionality including:
+ * - Event listing endpoint (GET /api/events)
+ * - Ticket purchasing endpoint (POST /api/events/:id/purchase)
+ * - Error handling for various edge cases
+ * - Database consistency and concurrency scenarios
+ * - Data integrity after multiple operations
+ * 
+ * @requires supertest For HTTP endpoint testing
+ * @requires jest For test framework and mocking
+ * @requires sqlite3 For test database operations
+ */
 describe('Client Controller Tests', () => {
 
   test('GET /api/events returns list of events', async () => {
