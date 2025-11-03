@@ -11,7 +11,10 @@ const client = new OpenAI({
 /**
  * POST /api/llm/parse
  * Body: { "text": "book 3 tickets for Jazz Night" }
- * Description: Uses GPT to extract event name and ticket count.
+ * Description: Uses GPT to extract event name and ticket count from natural language.
+ * @param {Object} req - Express request object containing text in body
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with parsed data and event match from database
  */
 async function parseUserInput(req, res) {
   try {
@@ -65,7 +68,10 @@ User message: "${text}"
 /**
  * POST /api/llm/confirm
  * Body: { "event": "Jazz Night", "tickets": 2 }
- * Description: Updates tickets_available for the given event.
+ * Description: Confirms and processes ticket booking by updating tickets_sold in database.
+ * @param {Object} req - Express request object containing event and tickets in body
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with booking confirmation and updated event data
  */
 function confirmBooking(req, res) {
   const { event, tickets } = req.body || {};
@@ -122,6 +128,14 @@ function confirmBooking(req, res) {
   );
 }
 
+/**
+ * POST /api/llm/chat
+ * Body: { "message": "Hello, I want to book tickets" }
+ * Description: Handles conversational LLM chat for booking assistance.
+ * @param {Object} req - Express request object containing message in body
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with chat reply and action
+ */
 async function handleChat(req, res) {
   const { message } = req.body;
   if (!message) return res.status(400).json({ error: "Missing message" });
