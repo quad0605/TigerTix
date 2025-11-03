@@ -13,7 +13,7 @@ import LLMPanel from "./components/llmPanel";
  */
 export default function App() {
 
-
+  const [speechEnabled,setSpeechEnabled] = useState(true);
 
 
   /**
@@ -37,6 +37,27 @@ export default function App() {
       .catch((e) => console.error("GET /api/events failed", e));
   }, []);
 
+  const toggleTTS = () => {
+    setSpeechEnabled(prev => !prev);
+    if (speechEnabled) {
+      window.speechSynthesis.cancel(); // stop speech immediately
+    }
+  };
+  function speakMessage(message) {
+  if (!("speechSynthesis" in window)) {
+    console.warn("Speech Synthesis not supported in this browser.");
+    return;
+  }
+
+  const utterance = new SpeechSynthesisUtterance(message);
+  utterance.rate = 1;   // Speed (0.1 - 10)
+  utterance.pitch = 1;  // Pitch (0 - 2)
+  utterance.volume = 1; // Volume (0 - 1)
+
+  // Optional: cancel any previous speech
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utterance);
+}
   /**
  * Sends a POST request to purchase a ticket for a specific event.
  * Updates the local event list and shows a confirmation message.
@@ -63,7 +84,7 @@ export default function App() {
     }
   }
   async function sendMessage(text) {
-    if (text != "") {
+    if (text !== "") {
       const newMessage = {
         text,
         time: new Date().toLocaleTimeString(),
@@ -72,10 +93,10 @@ export default function App() {
       };
       setChatMessages((prevMessages) => [...prevMessages, newMessage]);
 
-// This is kindof a simple work around since it doesn't "remember" I'm just resending the entire chat
-const fullConversation = [...chatMessages, newMessage]
-      .map(msg => `${msg.user ? 'User' : 'Bot'}: ${msg.text}`)
-      .join('\n');
+      // This is kindof a simple work around since it doesn't "remember" I'm just resending the entire chat
+      const fullConversation = [...chatMessages, newMessage]
+        .map(msg => `${msg.user ? 'User' : 'Bot'}: ${msg.text}`)
+        .join('\n');
 
       const requestOptions = {
         method: 'POST', // or 'PUT', 'DELETE', etc.
@@ -97,6 +118,10 @@ const fullConversation = [...chatMessages, newMessage]
           id: chatMessages.length + 1,
           user: false
         };
+
+        if (speechEnabled === true) {
+          speakMessage(newResponse.text);
+        }
         setChatMessages((prevMessages) => [...prevMessages, newResponse]);
       } catch (err) {
 
@@ -121,7 +146,7 @@ const fullConversation = [...chatMessages, newMessage]
       <Message message={message} />
       <EventList events={events} onBuy={buy} />
 
-      <LLMPanel chatMessages={chatMessages} onSend={sendMessage} />
+      <LLMPanel chatMessages={chatMessages} onSend={sendMessage} toggleTTS={toggleTTS} speechEnabled={speechEnabled}/>
 
     </main>
   );
