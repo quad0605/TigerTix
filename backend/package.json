@@ -3,16 +3,24 @@
   "version": "1.0.0",
   "description": "TigerTix Backend - Microservices Architecture",
   "scripts": {
-    "install-all": "cd admin-service && npm install && cd ../client-service && npm install",
+    "install-all": "cd admin-service && npm install && cd ../client-service && npm install && cd ../user-authentication && npm install",
     "setup-db": "cd admin-service && npm run setup-db",
     "start-admin": "cd admin-service && npm start",
     "start-client": "cd client-service && npm start",
+    "start-auth": "cd user-authentication && npm start",
     "dev-admin": "cd admin-service && npm run dev",
     "dev-client": "cd client-service && npm run dev",
-    "start-all": "concurrently \"npm run start-admin\" \"npm run start-client\"",
-    "dev-all": "concurrently \"npm run dev-admin\" \"npm run dev-client\""
+    "dev-auth": "cd user-authentication && npm run dev",
+    "start-all": "concurrently \"npm run start-admin\" \"npm run start-client\" \"npm run start-auth\"",
+    "dev-all": "concurrently \"npm run dev-admin\" \"npm run dev-client\" \"npm run dev-auth\""
   },
-  "keywords": ["tigertix", "backend", "microservices", "events", "tickets"],
+  "keywords": [
+    "tigertix",
+    "backend",
+    "microservices",
+    "events",
+    "tickets"
+  ],
   "author": "TigerTix Team",
   "license": "MIT",
   "devDependencies": {
@@ -20,6 +28,13 @@
   },
   "workspaces": [
     "admin-service",
-    "client-service"
-  ]
+    "client-service",
+    "user-authentication"
+  ],
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.2.3",
+    "sequelize": "^6.37.7"
+  }
 }
