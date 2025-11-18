@@ -320,3 +320,58 @@ textarea.message-input:focus {
   background-color: rgba(179, 35, 35, 0.651);
 
 }
+
+/* login stuff*/
+.LoginPopUp{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 50%;
+  width:500px;
+
+  border: 2px solid rgb(255, 94, 0);
+  border-radius: 1em;
+  box-shadow: -2px 5px 5px rgb(240, 164, 94);
+
+  background-color: white;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  color: #011627;
+
+  padding: 2rem;
+
+}
+.LoginPopUpSubmit{
+  background-color: coral;
+}
+
+.NameInputBox{
+  width: 80%;
+  height: 40px;
+  border-radius: 20px;
+  padding: 10px;
+}
+.EmailInputBox{
+  width: 80%;
+  height: 40px;
+  border-radius: 20px;
+  padding: 10px;
+}
+.PasswordInputBox{
+   width: 80%;
+  height: 40px;
+  border-radius: 20px;
+  padding: 10px; width: 80%;
+}
+
+
+.LoginPopUpTitle{
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+font-size: 2rem;
+}

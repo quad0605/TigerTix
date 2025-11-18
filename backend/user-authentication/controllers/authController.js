@@ -1,12 +1,17 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const db = require("../config/db");
+const fs = require("fs");
+const privateKey = fs.readFileSync("./private.pem");
 
-const JWT_SECRET = process.env.JWT_SECRET || "secret-example";
+
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "30m";
 
 function signToken(payload) {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+  return jwt.sign(payload, privateKey, {
+    algorithm: "RS256",
+    expiresIn: JWT_EXPIRES_IN,
+  });
 }
 
 function cookieOptions() {
@@ -56,8 +61,9 @@ exports.login = async (req, res) => {
     const match = await bcrypt.compare(password, row.password);
     if (!match) return res.status(401).json({ error: "invalid credentials" });
 
-    const token = signToken({ sub: row.id, email: row.email });
+    const token = signToken({ sub: row.id });
     res.cookie("token", token, cookieOptions());
+
     res.json({ message: "logged_in", user: { id: row.id, email: row.email, name: row.name } });
   });
 };

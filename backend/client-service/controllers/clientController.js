@@ -37,6 +37,7 @@ async function getAllEvents(req, res) {
  */
 async function purchaseTicketHandler(req, res) {
   try {
+    console.log("HEYY");
     const id = Number(req.params.id);
     if (!Number.isInteger(id) || id <= 0) {
       return res.status(400).json({ error: "id must be a positive integer" });

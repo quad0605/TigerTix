@@ -2,13 +2,22 @@
 //clientRoutes handles /api/client routes
 const express = require('express');
 const cors = require('cors');
-const clientRoutes = require('./routes/clientRoutes');
+const cookieParser = require("cookie-parser");
 
 //port 6001 is used and app creates express application
 const PORT = process.env.PORT || 6001;
 const app = express();
 
-app.use(cors());
+
+// MUST be before any routes that need req.cookies
+app.use(cookieParser());
+app.use(express.json());
+
+const clientRoutes = require('./routes/clientRoutes');
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
 app.use(express.json());
 
 app.use('/api', clientRoutes);

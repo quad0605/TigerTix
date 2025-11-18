@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import EventList from "./components/EventList";
 import Message from "./components/Message";
 import LLMPanel from "./components/llmPanel";
+import LoginPopUp from "./components/login";
 
 /**
  * Main application component for TigerTix.
@@ -13,8 +14,8 @@ import LLMPanel from "./components/llmPanel";
  */
 export default function App() {
 
-  const [speechEnabled,setSpeechEnabled] = useState(true);
-
+  const [speechEnabled, setSpeechEnabled] = useState(true);
+  const [showPopUp, setShowPopUp] = useState(true);
 
   /**
    * List of all events fetched from the backend.
@@ -44,20 +45,20 @@ export default function App() {
     }
   };
   function speakMessage(message) {
-  if (!("speechSynthesis" in window)) {
-    console.warn("Speech Synthesis not supported in this browser.");
-    return;
+    if (!("speechSynthesis" in window)) {
+      console.warn("Speech Synthesis not supported in this browser.");
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(message);
+    utterance.rate = 1;   // Speed (0.1 - 10)
+    utterance.pitch = 1;  // Pitch (0 - 2)
+    utterance.volume = 1; // Volume (0 - 1)
+
+    // Optional: cancel any previous speech
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
   }
-
-  const utterance = new SpeechSynthesisUtterance(message);
-  utterance.rate = 1;   // Speed (0.1 - 10)
-  utterance.pitch = 1;  // Pitch (0 - 2)
-  utterance.volume = 1; // Volume (0 - 1)
-
-  // Optional: cancel any previous speech
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(utterance);
-}
   /**
  * Sends a POST request to purchase a ticket for a specific event.
  * Updates the local event list and shows a confirmation message.
@@ -68,10 +69,15 @@ export default function App() {
  * @returns {Promise<void>} Resolves when the purchase and UI update complete.
  */
   async function buy(id) {
+    console.log("HIIIII!!!\n");
     try {
-      const res = await fetch(`/api/events/${id}/purchase`, { method: "POST" });
+      const res = await fetch(`http://localhost:6001/api/events/${id}/purchase`, {
+        method: "POST",
+        credentials: "include" // sends the cookie automatically
+      });
       if (!res.ok) throw new Error("purchase failed");
 
+      console.log("bruh");
       const { event, message: serverMessage } = await res.json();
       setEvents((prev) => prev.map((e) => (e.id === event.id ? event : e)));
 
@@ -99,14 +105,14 @@ export default function App() {
         .join('\n');
 
       const requestOptions = {
-        method: 'POST', // or 'PUT', 'DELETE', etc.
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json', // Crucial for sending JSON
-          'Accept': 'application/json' // Optional: indicates you expect JSON in return
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
         body: JSON.stringify({
           message: fullConversation,
-        }) // Convert your JavaScript object to a JSON string
+        })
       };
       try {
         const res = await fetch(`http://localhost:7001/api/llm/chat`, requestOptions);
@@ -131,12 +137,63 @@ export default function App() {
 
   }
 
+  async function sendLogin(email, password) {
+
+
+    try {
+      const res = await fetch(`http://localhost:4000/api/auth/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+          credentials: "include" // important!
+        });
+      console.log(res);
+      if (!res.ok) throw new Error("Message failed to send");
+      if (res.ok) {
+        setShowPopUp(false);
+      }
+
+    } catch (err) {
+      console.error("Message failed to send", err);
+    }
+
+  }
+
+  async function sendSignUp(name, email, password) {
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        name: name,
+      })
+    };
+
+    try {
+      const res = await fetch(`http://localhost:4000/api/auth/register`, requestOptions);
+      console.log(res);
+      if (!res.ok) throw new Error("Message failed to send");
+      
+    } catch (err) {
+      console.error("Message failed to send", err);
+    }
+
+
+  }
+
+
   //Render the main app interface
   return (
     <main
       role="main"
       aria-label="Event ticket purchasing system"
     >
+      <LoginPopUp showPopUp={showPopUp} onSubmitLogin={sendLogin} onSubmitSignUp={sendSignUp} />
       <header>
         <h1
           tabIndex="0"
@@ -146,7 +203,7 @@ export default function App() {
       <Message message={message} />
       <EventList events={events} onBuy={buy} />
 
-      <LLMPanel chatMessages={chatMessages} onSend={sendMessage} toggleTTS={toggleTTS} speechEnabled={speechEnabled}/>
+      <LLMPanel chatMessages={chatMessages} onSend={sendMessage} toggleTTS={toggleTTS} speechEnabled={speechEnabled} />
 
     </main>
   );
