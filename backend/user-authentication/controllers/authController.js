@@ -2,7 +2,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const db = require("../config/db");
 const fs = require("fs");
-const privateKey = fs.readFileSync("./private.pem");
+const path = require("path");
+const privateKey = fs.readFileSync(path.join(__dirname, "../private.pem"), "utf8");
+
 
 
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "30m";

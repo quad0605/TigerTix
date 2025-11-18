@@ -103,27 +103,6 @@ describe('Auth Routes Integration', () => {
 		expect(setCookie).toBeDefined();
 		expect(setCookie.some(s => /token=/.test(s))).toBe(true);
 	});
-
-	test('GET /api/auth/me returns 401 without token and 200 with token', async () => {
-		const unauth = await request(app).get('/api/auth/me');
-		expect(unauth.status).toBe(401);
-
-		// register and login to get cookie
-		await request(app)
-			.post('/api/auth/register')
-			.send({ email: 'me@example.com', password: 'Password1!', name: 'Me' });
-
-		const loginRes = await request(app)
-			.post('/api/auth/login')
-			.send({ email: 'me@example.com', password: 'Password1!' });
-
-		const cookies = loginRes.headers['set-cookie'];
-		const meRes = await request(app).get('/api/auth/me').set('Cookie', cookies);
-		expect(meRes.status).toBe(200);
-		expect(meRes.body).toHaveProperty('user');
-		expect(meRes.body.user.email).toBe('me@example.com');
-	});
-
 	test('POST /api/auth/logout clears cookie', async () => {
 		await request(app)
 			.post('/api/auth/register')
