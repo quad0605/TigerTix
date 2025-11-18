@@ -23,17 +23,14 @@ async function fetchPublicKeyIfNeeded() {
 
 module.exports = async (req, res, next) => {
   try {
-    console.log("Hi");
     const token =
       req.cookies?.token ||
       (req.headers.authorization?.startsWith("Bearer ") ? req.headers.authorization.split(" ")[1] : null);
     if (!token) return res.status(401).json({ error: "no_token_provided" });
 
-    console.log("Bruh");
     const publicKey = await fetchPublicKeyIfNeeded();
     const payload = jwt.verify(token, publicKey, { algorithms: ["RS256"], issuer: process.env.ISSUER });
     req.user = payload;
-    console.log("Bye");
     next();
   } catch (err) {
     console.error("auth error:", err.message);

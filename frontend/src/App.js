@@ -69,7 +69,6 @@ export default function App() {
  * @returns {Promise<void>} Resolves when the purchase and UI update complete.
  */
   async function buy(id) {
-    console.log("HIIIII!!!\n");
     try {
       const res = await fetch(`http://localhost:6001/api/events/${id}/purchase`, {
         method: "POST",
@@ -77,7 +76,6 @@ export default function App() {
       });
       if (!res.ok) throw new Error("purchase failed");
 
-      console.log("bruh");
       const { event, message: serverMessage } = await res.json();
       setEvents((prev) => prev.map((e) => (e.id === event.id ? event : e)));
 

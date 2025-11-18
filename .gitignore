@@ -45,3 +45,6 @@ Thumbs.db
 # Build outputs
 build/
 dist/
+backend/user-authentication/tests/test_auth.sqlite
+backend/client-service/tests/test_simple.sqlite
+backend/client-service/tests/test_simple.sqlite

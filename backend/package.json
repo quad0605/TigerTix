@@ -12,7 +12,8 @@
     "dev-client": "cd client-service && npm run dev",
     "dev-auth": "cd user-authentication && npm run dev",
     "start-all": "concurrently \"npm run start-admin\" \"npm run start-client\" \"npm run start-auth\"",
-    "dev-all": "concurrently \"npm run dev-admin\" \"npm run dev-client\" \"npm run dev-auth\""
+    "dev-all": "concurrently \"npm run dev-admin\" \"npm run dev-client\" \"npm run dev-auth\"",
+    "test": "jest"
   },
   "keywords": [
     "tigertix",
@@ -38,11 +39,7 @@
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.2.3",
-<<<<<<< HEAD
     "jsonwebtoken": "^9.0.2",
-=======
-    "node-fetch": "^3.3.2",
->>>>>>> 87e04f93b3422f9e4a2fcc456dba24f853cbda6c
     "sequelize": "^6.37.7"
   }
 }
