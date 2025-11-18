@@ -1,19 +1,42 @@
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = process.env.JWT_SECRET || "secret-example";
+const fs = require("fs");
+const path = require("path");
+let cachedPublicKey = null;
+let cacheExpires = 0;
 
-module.exports = (req, res, next) => {
-  const token =
-    req.cookies?.token ||
-    (req.headers.authorization?.startsWith("Bearer ")
-      ? req.headers.authorization.split(" ")[1]
-      : null);
+async function fetchPublicKeyIfNeeded() {
+  const now = Date.now();
+  if (cachedPublicKey && now < cacheExpires) return cachedPublicKey;
 
-  if (!token) return res.status(401).json({ error: "no_token_provided" });
+  try {
+    console.log("hi");
+    const keyPath = path.join(__dirname, "../../user-authentication/public.pem");
+    const cachedPublicKey = fs.readFileSync(keyPath, "utf8");
+    cacheExpires = now + (process.env.PUBLIC_KEY_TTL_MS ? Number(process.env.PUBLIC_KEY_TTL_MS) : 60_000);
+    return cachedPublicKey;
+  } catch (e) {
+    
+    console.err("NO FILE", e);
+    
+  }
+}
 
-  jwt.verify(token, JWT_SECRET, (err, payload) => {
-    if (err) return res.status(401).json({ error: "invalid_token" });
-    req.userId = payload.sub;
-    req.userEmail = payload.email;
+module.exports = async (req, res, next) => {
+  try {
+    console.log("Hi");
+    const token =
+      req.cookies?.token ||
+      (req.headers.authorization?.startsWith("Bearer ") ? req.headers.authorization.split(" ")[1] : null);
+    if (!token) return res.status(401).json({ error: "no_token_provided" });
+
+    console.log("Bruh");
+    const publicKey = await fetchPublicKeyIfNeeded();
+    const payload = jwt.verify(token, publicKey, { algorithms: ["RS256"], issuer: process.env.ISSUER });
+    req.user = payload;
+    console.log("Bye");
     next();
-  });
+  } catch (err) {
+    console.error("auth error:", err.message);
+    return res.status(401).json({ error: "invalid_token" });
+  }
 };
