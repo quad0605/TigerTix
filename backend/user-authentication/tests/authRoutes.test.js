@@ -38,7 +38,6 @@ jest.mock('../config/db', () => {
 
 const authRoutes = require('../routes/authRoutes');
 
-// Increase Jest timeout for slower CI/dev machines where bcrypt/jwt may take time
 jest.setTimeout(20000);
 
 function createApp() {

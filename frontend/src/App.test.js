@@ -62,48 +62,129 @@ test('fetches and displays events on initial render', async () => {
   // Check if fetch was called correctly
   expect(fetch).toHaveBeenCalledWith('/api/events');
 });
-
-test('handles ticket purchase, shows success message, then clears it', async () => {
-  // Mock fetching events
+test("user can log in successfully", async () => {
   fetch.mockResolvedValueOnce({
     ok: true,
     json: async () => mockEvents,
+  });
+
+  fetch.mockResolvedValueOnce({
+    ok: true,
+    json: async () => ({ token: "FAKE_JWT" }),
   });
 
   await act(async () => {
     render(<App />);
   });
 
-  const purchaseButton = await screen.findByRole('button', {
-    name: /buy ticket for Clemson vs. FSU/i,
+  // Fill login form
+  fireEvent.change(screen.getByPlaceholderText("Enter Email"), {
+    target: { value: "test@example.com" },
+  });
+  fireEvent.change(screen.getByPlaceholderText("Enter Password"), {
+    target: { value: "secret123" },
   });
 
-  // Mock the purchase API call
+  fireEvent.click(screen.getByText("Submit"));
+
+  // Popup disappears
+  await waitFor(() =>
+    expect(screen.queryByText("Login")).not.toBeInTheDocument()
+  );
+
+  expect(fetch).toHaveBeenNthCalledWith(
+    2,
+    "http://localhost:4000/api/auth/login",
+    expect.objectContaining({
+      method: "POST",
+      credentials: "include",
+    })
+  );
+
+  expect(fetch).toHaveBeenCalledTimes(2);
+});
+
+
+test("user logs in and successfully purchases a ticket", async () => {
+
+
+  const eventBefore = {
+    id: 1,
+    name: "Cool Event",
+    tickets_total: 10,
+    tickets_sold: 1,
+    date: "2025-01-01T12:00:00Z"
+  };
+
+  const eventAfter = {
+    id: 1,
+    name: "Cool Event",
+    tickets_total: 10,
+    tickets_sold: 2,
+    date: "2025-01-01T12:00:00Z"
+  };
+
+  fetch.mockResolvedValueOnce({
+    ok: true,
+    json: async () => [eventBefore],
+  });
+
+  fetch.mockResolvedValueOnce({
+    ok: true,
+    json: async () => ({ token: "FAKE_JWT" }),
+  });
+
   fetch.mockResolvedValueOnce({
     ok: true,
     json: async () => ({
-      message: 'Purchase successful!',
-      event: {
-        ...mockEvents[0],
-        tickets_sold: mockEvents[0].tickets_sold + 1,
-      },
+      event: eventAfter,
+      message: "Purchase successful",
     }),
   });
 
   await act(async () => {
-    fireEvent.click(purchaseButton);
+    render(<App />);
   });
 
-  const successMessage = await screen.findByText('Purchase successful!');
-  expect(successMessage).toBeInTheDocument();
-  expect(fetch).toHaveBeenCalledWith('/api/events/1/purchase', { method: 'POST' });
-
-  // Wrap the timer advancement in act() too
-  await act(async () => {
-    jest.advanceTimersByTime(5000);
+  // Log the user in
+  fireEvent.change(screen.getByPlaceholderText("Enter Email"), {
+    target: { value: "test@example.com" },
   });
 
-  await waitFor(() => {
-    expect(screen.queryByText('Purchase successful!')).not.toBeInTheDocument();
+  fireEvent.change(screen.getByPlaceholderText("Enter Password"), {
+    target: { value: "secret123" },
   });
+
+  fireEvent.click(screen.getByText("Submit"));
+
+  // Login popup disappears
+  await waitFor(() =>
+    expect(screen.queryByText("Login")).not.toBeInTheDocument()
+  );
+
+  const buyButton = screen.getByRole('button', { name: /Buy Ticket/i });
+  expect(buyButton).toHaveClass('buy');
+  fireEvent.click(buyButton);
+
+
+
+  // Expect POST purchase call
+  expect(fetch).toHaveBeenNthCalledWith(
+    3, // purchase is the 3rd request
+    "http://localhost:6001/api/events/1/purchase",
+    expect.objectContaining({
+      method: "POST",
+      credentials: "include",
+    })
+  );
+
+  // Confirmation message should appear
+  await waitFor(() =>
+    expect(screen.getByText("Purchase successful")).toBeInTheDocument()
+  );
+
+  // Tickets should show the updated value
+  const eventCard = screen.getByText("Cool Event").closest("li");
+  expect(eventCard).toHaveTextContent("Tickets available: 8");
+
 });

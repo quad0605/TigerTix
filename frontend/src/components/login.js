@@ -29,7 +29,6 @@ export default function LoginPopUp({showPopUp, onSubmitLogin, onSubmitSignUp}){
 
 LoginPopUp.propTypes = {
   showPopUp: PropTypes.bool.isRequired,
-  showLogin: PropTypes.bool.isRequired,
   onSubmitLogin: PropTypes.func.isRequired,
   onSubmitSignUp: PropTypes.func.isRequired,
 };

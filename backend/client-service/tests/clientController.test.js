@@ -7,6 +7,13 @@ const sqlite3 = require('sqlite3').verbose();
 
 const clientRoutes = require('../routes/clientRoutes');
 
+jest.mock("../../user-authentication/middleware/authMiddleware", () => {
+  return (req, res, next) => {
+    req.user = { id: 1, email: "test@example.com" }; // pretend valid user
+    next();
+  };
+});
+
 const TEST_DB_PATH = path.join(__dirname, 'test_simple.sqlite');
 
 /**

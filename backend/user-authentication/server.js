@@ -5,7 +5,6 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 
 const authRoutes = require("./routes/authRoutes");
-const protectedRoutes = require("./routes/protectedRoutes");
 const db = require("./config/db");
 
 const cors = require("cors");
@@ -21,7 +20,6 @@ app.use(cookieParser());
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api", protectedRoutes);
 
 // Simple error handler
 app.use((err, req, res, next) => {
