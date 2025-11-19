@@ -13,6 +13,14 @@ const sqlite3 = require('sqlite3').verbose();
 // Temporary test DB file for auth tests
 const TEST_DB_PATH = path.join(__dirname, 'test_auth.sqlite');
 
+/**
+ * Test Setup: Authentication Database Initialization
+ * Creates and returns a temporary SQLite database used by auth tests.
+ * Ensures a clean database state before tests and removes the file after tests complete.
+ * @setup beforeAll - Database Initialization
+ * @cleanup afterAll - Remove test DB file
+ */
+
 // Mock the DB module so controllers use the test DB
 jest.mock('../config/db', () => {
 	const fsLocal = require('fs');
@@ -59,7 +67,12 @@ describe('Auth Routes Integration', () => {
 		// cleanup test DB file
 		try { if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH); } catch (e) {}
 	});
-
+    
+	/**
+	 * Test Case: User Registration and Cookie Setting
+	 * Verifies that POST /api/auth/register creates a new user and sets an auth token cookie.
+	 * @test POST /api/auth/register - Registration & Cookie
+	 */
 	test('POST /api/auth/register creates a user and sets cookie', async () => {
 		const res = await request(app)
 			.post('/api/auth/register')
@@ -73,6 +86,11 @@ describe('Auth Routes Integration', () => {
 		expect(setCookie.some(s => /token=/.test(s))).toBe(true);
 	});
 
+	/**
+	 * Test Case: Duplicate Email Registration Handling
+	 * Ensures registering with an existing email returns a 409 conflict and an appropriate error message.
+	 * @test POST /api/auth/register - Duplicate Email
+	 */
 	test('POST /api/auth/register returns 409 for duplicate email', async () => {
 		await request(app)
 			.post('/api/auth/register')
@@ -86,6 +104,11 @@ describe('Auth Routes Integration', () => {
 		expect(res.body.error).toMatch(/email already registered/i);
 	});
 
+	/**
+	 * Test Case: Login Authentication and Cookie Issuance
+	 * Confirms that a registered user can login and receives an auth token cookie in response.
+	 * @test POST /api/auth/login - Login
+	 */
 	test('POST /api/auth/login authenticates and returns cookie', async () => {
 		await request(app)
 			.post('/api/auth/register')
@@ -102,6 +125,11 @@ describe('Auth Routes Integration', () => {
 		expect(setCookie).toBeDefined();
 		expect(setCookie.some(s => /token=/.test(s))).toBe(true);
 	});
+	/**
+	 * Test Case: Logout Clears Auth Cookie
+	 * Verifies that POST /api/auth/logout clears the auth cookie and returns a logged_out message.
+	 * @test POST /api/auth/logout - Logout
+	 */
 	test('POST /api/auth/logout clears cookie', async () => {
 		await request(app)
 			.post('/api/auth/register')
