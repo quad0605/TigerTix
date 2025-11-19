@@ -1,6 +1,4 @@
-(function(){
-	// wrapped in an IIFE to avoid hoisting issues when running with other tests
-})();
+//backend/user-authentication/tests
 
 const request = require('supertest');
 const express = require('express');
