@@ -24,6 +24,13 @@ const mockEvents = [
   },
 ];
 
+/**
+ * Test Setup: Frontend App Tests
+ * Mocks `fetch` and supplies sample events to verify UI rendering,
+ * login behavior, and purchase flows in a deterministic way.
+ * @setup beforeEach - Clear fetch mocks
+ */
+
 // Use fake timers to control setTimeout
 jest.useFakeTimers();
 
@@ -31,6 +38,11 @@ beforeEach(() => {
   fetch.mockClear();
 });
 
+/**
+ * Test Case: App Header Rendering
+ * Verifies the application header (`TigerTix`) is rendered on initial load.
+ * @test Render - Header
+ */
 test('renders TigerTix header', async () => {
   fetch.mockResolvedValueOnce({
     ok: true,
@@ -45,6 +57,11 @@ test('renders TigerTix header', async () => {
   expect(headerElement).toBeInTheDocument();
 });
 
+/**
+ * Test Case: Initial Events Fetch and Display
+ * Ensures events are fetched and displayed on first render and fetch was called correctly.
+ * @test GET /api/events - Initial Render
+ */
 test('fetches and displays events on initial render', async () => {
   fetch.mockResolvedValueOnce({
     ok: true,
@@ -62,6 +79,11 @@ test('fetches and displays events on initial render', async () => {
   // Check if fetch was called correctly
   expect(fetch).toHaveBeenCalledWith('/api/events');
 });
+/**
+ * Test Case: User Login Flow
+ * Confirms user can submit the login form and a login request is made.
+ * @test POST /api/auth/login - Login
+ */
 test("user can log in successfully", async () => {
   fetch.mockResolvedValueOnce({
     ok: true,
@@ -105,6 +127,12 @@ test("user can log in successfully", async () => {
 });
 
 
+/**
+ * Test Case: Login + Purchase Flow
+ * Simulates a user logging in then purchasing a ticket and verifies the purchase request
+ * and updated UI state (confirmation message and ticket counts).
+ * @test POST /api/events/:id/purchase - Purchase
+ */
 test("user logs in and successfully purchases a ticket", async () => {
 
 
