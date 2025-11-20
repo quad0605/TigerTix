@@ -136,6 +136,7 @@ export default function App() {
 
   }
 
+  const [ loginEmail, setLoginEmail]=useState("");
   async function sendLogin(email, password) {
 
 
@@ -151,6 +152,7 @@ export default function App() {
       if (!res.ok) throw new Error("Message failed to send");
       if (res.ok) {
         setShowPopUp(false);
+        setLoginEmail(email);
       }
 
     } catch (err) {
@@ -199,7 +201,11 @@ export default function App() {
         >TigerTix</h1>
       </header>
 
-      <LogoutButton renableLogin={() => setShowPopUp(true)} />
+      {loginEmail!=="" &&
+        <LogoutButton emailLoggedIn={loginEmail} renableLogin={() => {
+          setShowPopUp(true);
+          setLoginEmail("");}} />
+      }
       <Message message={message} />
       <EventList events={events} onBuy={buy} />
 

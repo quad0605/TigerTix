@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-export default function LogoutButton({renableLogin}) {
+export default function LogoutButton({emailLoggedIn, renableLogin}) {
   const handleLogout = async () => {
     renableLogin(true);
     try {
@@ -28,10 +28,16 @@ export default function LogoutButton({renableLogin}) {
     }
   };
 
-  return <button onClick={handleLogout}>Logout</button>;
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+      <p>{emailLoggedIn}</p>
+      <button onClick={handleLogout}>Logout</button>
+    </div>
+  );
 }
 
 
 LogoutButton.propTypes = {
+  emailLoggedIn: PropTypes.string.isRequired,
   renableLogin: PropTypes.func.isRequired,
 };
