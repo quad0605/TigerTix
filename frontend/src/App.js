@@ -4,6 +4,7 @@ import EventList from "./components/EventList";
 import Message from "./components/Message";
 import LLMPanel from "./components/llmPanel";
 import LoginPopUp from "./components/login";
+import LogoutButton from "./components/logout";
 
 /**
  * Main application component for TigerTix.
@@ -198,6 +199,7 @@ export default function App() {
         >TigerTix</h1>
       </header>
 
+      <LogoutButton renableLogin={() => setShowPopUp(true)} />
       <Message message={message} />
       <EventList events={events} onBuy={buy} />
 
