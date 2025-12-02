@@ -4,6 +4,7 @@ import EventList from "./components/EventList";
 import Message from "./components/Message";
 import LLMPanel from "./components/llmPanel";
 import LoginPopUp from "./components/login";
+import LogoutButton from "./components/logout";
 
 /**
  * Main application component for TigerTix.
@@ -135,6 +136,7 @@ export default function App() {
 
   }
 
+  const [ loginEmail, setLoginEmail]=useState("");
   async function sendLogin(email, password) {
 
 
@@ -150,6 +152,7 @@ export default function App() {
       if (!res.ok) throw new Error("Message failed to send");
       if (res.ok) {
         setShowPopUp(false);
+        setLoginEmail(email);
       }
 
     } catch (err) {
@@ -198,6 +201,11 @@ export default function App() {
         >TigerTix</h1>
       </header>
 
+      {loginEmail!=="" &&
+        <LogoutButton emailLoggedIn={loginEmail} renableLogin={() => {
+          setShowPopUp(true);
+          setLoginEmail("");}} />
+      }
       <Message message={message} />
       <EventList events={events} onBuy={buy} />
 
