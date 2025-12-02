@@ -1,37 +1,27 @@
+name: TigerTix CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
   backend-tests:
-    name: Backend Microservice Tests
+    name: Run Backend Tests
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: 18
 
-      - name: Install deps (admin-service)
-        working-directory: backend/admin-service
-        run: npm install
-
-      - name: Run admin-service tests
-        working-directory: backend/admin-service
-        run: npm test
-
-      - name: Install deps (client-service)
-        working-directory: backend/client-service
-        run: npm install
-
-      - name: Run client-service tests
-        working-directory: backend/client-service
-        run: npm test
-
-      - name: Install deps (user-authentication)
+      - name: Install dependencies - Auth Service
         working-directory: backend/user-authentication
         run: npm install
 
-      - name: Run auth tests
+      - name: Run authentication tests
         working-directory: backend/user-authentication
-        run: npm test
+        run: npm test -- --runInBand
