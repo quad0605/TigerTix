@@ -11,7 +11,7 @@ const cors = require("cors");
 const app = express();
 
 app.use(cors({
-  origin: "tiger-tix-rouge.vercel.app",
+  origin: "https://tiger-tix-rouge.vercel.app",
   credentials: true
 }));
 
