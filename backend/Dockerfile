@@ -12,6 +12,5 @@ CMD sh -c "\
     node admin-service & \
     node user-authentication & \
     node client-service & \
-    node llm-driven-booking & \
     wait \
 "
