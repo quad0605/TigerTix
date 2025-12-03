@@ -5,7 +5,7 @@ const cors = require('cors');
 const cookieParser = require("cookie-parser");
 
 //port 6001 is used and app creates express application
-const PORT = process.env.PORT || 6001;
+const PORT =  6001;
 const app = express();
 
 

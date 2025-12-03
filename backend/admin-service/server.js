@@ -6,7 +6,7 @@ const { initDb } = require('./setup');
 const adminRoutes = require('./routes/adminRoutes');
 
 //port 5001 is used and app creates express application
-const PORT = process.env.PORT || 5001;
+const PORT = 5001;
 const app = express();
 
 //cors allows cross-origin requests, express.json parses JSON body

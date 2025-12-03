@@ -27,7 +27,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ error: err.message || "Internal Server Error" });
 });
 
-const PORT = process.env.PORT || 4000;
+const PORT = 4000;
 
 // Test database connection and start server
 function start() {
