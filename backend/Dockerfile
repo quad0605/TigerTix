@@ -8,4 +8,4 @@ RUN tree
 RUN npm install
 
 
-CMD [ "node", "server.js"]
+CMD [ "node", "admin-service"]
