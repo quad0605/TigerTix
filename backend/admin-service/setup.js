@@ -4,8 +4,11 @@ const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 
 
+const BASE_DIR = path.resolve(__dirname, '../shared-db');
+
 // Define paths for database directory, and database file, and init SQL script
-const DB_DIR = '../shared-db'; 
+const DB_DIR = BASE_DIR;
+
 const DB_PATH = path.join(DB_DIR, 'database.sqlite');
 const INIT_SQL_PATH = path.join(DB_DIR, 'init.sql');
 
