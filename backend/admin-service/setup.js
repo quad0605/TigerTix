@@ -5,7 +5,7 @@ const sqlite3 = require('sqlite3').verbose();
 
 
 // Define paths for database directory, and database file, and init SQL script
-const DB_DIR = path.join(__dirname, '..', 'shared-db');
+const DB_DIR = '/shared-db'; 
 const DB_PATH = path.join(DB_DIR, 'database.sqlite');
 const INIT_SQL_PATH = path.join(DB_DIR, 'init.sql');
 
