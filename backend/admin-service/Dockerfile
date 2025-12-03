@@ -6,5 +6,5 @@ WORKDIR /app/admin-service
 COPY backend/admin-service/package*.json ./
 RUN npm install
 COPY backend/admin-service .
-COPY backend/shared-db/init.sql ./init.sql
+COPY backend/shared-db ./*
 CMD [ "node", "server.js"]
