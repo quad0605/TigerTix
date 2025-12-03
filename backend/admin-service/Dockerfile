@@ -14,4 +14,4 @@ RUN chmod 777 /shared-db
 COPY backend/shared-db/ ./shared-db/init.sql
 WORKDIR /app/admin-service
 RUN node setup.js
-RUN node server.js
+CMD ["node", "server.js"]
