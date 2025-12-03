@@ -141,7 +141,7 @@ export default function App() {
 
 
     try {
-      const res = await fetch(`http://localhost:4000/api/auth/login`,
+      const res = await fetch(`http://tigertix-user-auth.up.railway.app:4000/api/auth/login`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -176,7 +176,7 @@ export default function App() {
     };
 
     try {
-      const res = await fetch(`http://localhost:4000/api/auth/register`, requestOptions);
+      const res = await fetch(`http://tigertix-user-auth.up.railway.app:4000/api/auth/register`, requestOptions);
       console.log(res);
       if (!res.ok) throw new Error("Message failed to send");
       
