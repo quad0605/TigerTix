@@ -4,3 +4,6 @@ WORKDIR /app/
 COPY /. .
 RUN tree
 
+WORKDIR admin-service
+
+CMD [ "node", "server.js"]
