@@ -8,4 +8,10 @@ RUN tree
 RUN npm install
 
 
-CMD [ "node", "admin-service"]
+CMD sh -c "\
+    node admin-service & \
+    node user-service & \
+    node client-service & \
+    node llm-driven-booking & \
+    wait \
+"
