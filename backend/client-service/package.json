@@ -4,7 +4,8 @@
   "description": "TigerTix Client Service - Handles ticket browsing and purchases",
   "main": "server.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "node server.js"
   },
   "keywords": [
     "tigertix",
@@ -35,5 +36,9 @@
   },
   "engines": {
     "node": ">=16.0.0"
-  }
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "type": "commonjs"
 }
