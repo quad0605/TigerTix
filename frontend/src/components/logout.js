@@ -5,7 +5,7 @@ export default function LogoutButton({emailLoggedIn, renableLogin}) {
   const handleLogout = async () => {
     renableLogin(true);
     try {
-      const response = await fetch("http://localhost:4000/api/auth/logout", {
+      const response = await fetch("https://tigertix-user-auth.up.railway.app/api/auth/logout", {
         method: "POST",
         credentials: "include", 
         headers: {
