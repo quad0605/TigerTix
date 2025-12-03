@@ -5,5 +5,5 @@ COPY /. .
 RUN tree
 
 WORKDIR admin-service
-
+RUN npm install
 CMD [ "node", "server.js"]
