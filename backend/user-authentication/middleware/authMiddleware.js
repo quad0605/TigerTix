@@ -10,10 +10,11 @@ async function fetchPublicKeyIfNeeded() {
   if (cachedPublicKey && now < cacheExpires) return cachedPublicKey;
 
   try {
-    console.log("hi");
+    console.log("[Auth] Reading public key from file...");
     const keyPath = path.join(__dirname, "../../user-authentication/public.pem");
     const cachedPublicKey = fs.readFileSync(keyPath, "utf8");
     cacheExpires = now + (process.env.PUBLIC_KEY_TTL_MS ? Number(process.env.PUBLIC_KEY_TTL_MS) : 60_000);
+    console.log("[Auth] Public key loaded and cached");
     return cachedPublicKey;
   } catch (e) {
     
@@ -24,6 +25,10 @@ async function fetchPublicKeyIfNeeded() {
 
 module.exports = async (req, res, next) => {
   try {
+    console.log(`[Auth] Incoming request: ${req.method} ${req.path}`);
+    console.log("[Auth] Cookies:", req.cookies);
+    console.log("[Auth] Authorization header:", req.headers.authorization);
+
     const token =
       req.cookies?.token ||
       (req.headers.authorization?.startsWith("Bearer ") ? req.headers.authorization.split(" ")[1] : null);
