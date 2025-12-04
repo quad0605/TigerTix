@@ -6,7 +6,7 @@ const llmRoutes = require("./routes/llmRoute");
 
 const app = express();
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: "https://tigertix-frontend.vercel.app",
   credentials: true
 }));
 app.use(express.json());
@@ -19,9 +19,9 @@ app.get("/health", (req, res) => {
 // Mount LLM routes
 app.use("/api/llm", llmRoutes);
 
-const PORT = process.env.PORT || 7001;
+const PORT = 7001;
 app.listen(PORT, () => {
-  console.log(`✅ LLM service running on http://localhost:${PORT}`);
+  console.log(`LLM service running on http://localhost:${PORT}`);
   console.log("POST /api/llm/parse → interpret text with GPT");
   console.log("POST /api/llm/confirm → confirm ticket booking");
 });
