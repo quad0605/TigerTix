@@ -19,7 +19,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
-app.use('/api', clientRoutes);
+app.use('/api/client', clientRoutes);
 
 // Centralized error handler
 app.use((err, req, res, next) => {
