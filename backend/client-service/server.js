@@ -14,7 +14,7 @@ app.use(cookieParser());
 
 const clientRoutes = require('./routes/clientRoutes');
 app.use(cors({
-  origin: 'https://tigertix-frontend.vercel.app',
+  origin: 'https://tigertix-rouge.vercel.app',
   credentials: true
 }));
 app.use(express.json());
