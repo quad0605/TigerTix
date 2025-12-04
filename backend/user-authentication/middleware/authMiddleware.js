@@ -17,7 +17,7 @@ async function fetchPublicKeyIfNeeded() {
     return cachedPublicKey;
   } catch (e) {
     
-    console.err("NO FILE", e);
+    console.error("NO FILE", e);
     
   }
 }
