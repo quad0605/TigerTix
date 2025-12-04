@@ -23,7 +23,7 @@ app.use("/api/client", proxy("http://localhost:6001", {
 
 app.use("/api/llm", proxy("http://localhost:7001", {
   proxyReqPathResolver: function (req) {
-    return '/api/booking' + req.url;
+    return '/api/llm' + req.url;
   }
 }));
 
