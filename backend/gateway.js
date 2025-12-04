@@ -14,9 +14,9 @@ app.use("/api/admin", proxy("http://localhost:5001", {
     console.log("Proxying:", req.originalUrl.replace(/^\/api\/admin/, ''));
   }
 }));
-app.use("/api/events", proxy("http://localhost:6001", {
-  proxyReqPathResolver: req => req.originalUrl
-}));
+
+app.use("/api/events", proxy("http://localhost:6001"));
+
 //app.use("/api/booking", proxy("http://localhost:4003"));
 app.use("/api/auth",   proxy("http://localhost:4000"));
 
