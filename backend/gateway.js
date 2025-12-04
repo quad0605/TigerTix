@@ -6,7 +6,7 @@ const app = express();
 
 spawn("node", ["./admin-service/server.js"], { stdio: "inherit" });
 spawn("node", ["./client-service/server.js"], { stdio: "inherit" });
-spawn("node", ["./llm-driven-booking/server.js"], { stdio: "inherit" });
+//spawn("node", ["./llm-driven-booking/server.js"], { stdio: "inherit" });
 spawn("node", ["./user-authentication/server.js"], { stdio: "inherit" });
 
 app.use("/api/admin", proxy("http://localhost:5001", {
