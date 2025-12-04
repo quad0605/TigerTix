@@ -13,7 +13,7 @@ const app = express();
 
 const clientRoutes = require('./routes/clientRoutes');
 app.use(cors({
-  origin: 'https://tigertix-rouge.vercel.app',
+  origin: 'https://tiger-tix-rouge.vercel.app',
   credentials: true
 }));
 app.use(express.json());

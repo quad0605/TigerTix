@@ -6,7 +6,7 @@ const llmRoutes = require("./routes/llmRoute");
 
 const app = express();
 app.use(cors({
-  origin: "https://tigertix-tix-rouge.vercel.app",
+  origin: "https://tiger-tix-tix-rouge.vercel.app",
   credentials: true
 }));
 app.use(express.json());
