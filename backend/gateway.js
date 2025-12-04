@@ -12,7 +12,6 @@ spawn("node", ["./user-authentication/server.js"], { stdio: "inherit" });
 app.use("/api/admin", proxy("http://localhost:5001", {
   proxyReqPathResolver: req => {
     console.log("Proxying:", req.originalUrl.replace(/^\/api\/admin/, ''));
-    return req.originalUrl.replace(/^\/api\/admin/, '');
   }
 }));
 app.use("/api/events", proxy("http://localhost:6001", {
