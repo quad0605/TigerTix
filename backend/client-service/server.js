@@ -11,11 +11,10 @@ const app = express();
 
 // MUST be before any routes that need req.cookies
 app.use(cookieParser());
-app.use(express.json());
 
 const clientRoutes = require('./routes/clientRoutes');
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'https://tigertix-frontend.vercel.app',
   credentials: true
 }));
 app.use(express.json());
