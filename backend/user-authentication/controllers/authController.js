@@ -21,7 +21,7 @@ function cookieOptions() {
   return {
     httpOnly: true,
     secure: isProd || process.env.COOKIE_SECURE === "true",
-    sameSite: "lax",
+    sameSite: "none",
     maxAge: 30 * 60 * 1000,
   };
 }
@@ -50,14 +50,7 @@ exports.register = async (req, res) => {
     );
   });
 };
-function cookieOptions() {
-  return {
-    httpOnly: true,                        
-    secure: process.env.NODE_ENV === "production", 
-    sameSite: "none",                       
-    maxAge: 24 * 60 * 60 * 1000,            
-  };
-}
+
 // Login
 exports.login = async (req, res) => {
   const { email, password } = req.body;
