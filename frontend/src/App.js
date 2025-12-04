@@ -71,7 +71,7 @@ export default function App() {
  */
   async function buy(id) {
     try {
-      const res = await fetch(`https://tigertix-user-auth.up.railway.app/api/events/${id}/purchase`, {
+      const res = await fetch(`https://tigertix-user-auth.up.railway.app/api/client/events/${id}/purchase`, {
         method: "POST",
         credentials: "include" // sends the cookie automatically
       });
@@ -114,7 +114,7 @@ export default function App() {
         })
       };
       try {
-        const res = await fetch(`http://localhost:7001/api/llm/chat`, requestOptions);
+        const res = await fetch(`https://tigertix-user-auth.up.railway.app/api/llm/chat`, requestOptions);
         if (!res.ok) throw new Error("Message failed to send");
         const data = await res.json();
         const newResponse = {
