@@ -50,11 +50,19 @@ exports.register = async (req, res) => {
     );
   });
 };
-
+function cookieOptions() {
+  return {
+    httpOnly: true,                        
+    secure: process.env.NODE_ENV === "production", 
+    sameSite: "none",                       
+    maxAge: 24 * 60 * 60 * 1000,            
+  };
+}
 // Login
 exports.login = async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password) return res.status(400).json({ error: "email and password required" });
+  if (!email || !password)
+    return res.status(400).json({ error: "email and password required" });
 
   db.get("SELECT * FROM users WHERE email = ?", [email], async (err, row) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -63,10 +71,19 @@ exports.login = async (req, res) => {
     const match = await bcrypt.compare(password, row.password);
     if (!match) return res.status(401).json({ error: "invalid credentials" });
 
+    // Generate JWT
     const token = signToken({ sub: row.id });
+
+    // Set cookie with proper cross-origin options
     res.cookie("token", token, cookieOptions());
 
-    res.json({ message: "logged_in", user: { id: row.id, email: row.email, name: row.name } });
+    console.log("[Auth] Login successful, cookie set for user:", row.email);
+
+    // Send response
+    res.json({
+      message: "logged_in",
+      user: { id: row.id, email: row.email, name: row.name },
+    });
   });
 };
 
