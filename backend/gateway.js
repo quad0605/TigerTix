@@ -1,9 +1,11 @@
 const express = require("express");
 const proxy = require("express-http-proxy");
 const { spawn } = require("child_process");
+const cors = require("cors");
+
 
 const app = express();
-
+app.use(cors());
 spawn("node", ["./admin-service/server.js"], { stdio: "inherit" });
 spawn("node", ["./client-service/server.js"], { stdio: "inherit" });
 //spawn("node", ["./llm-driven-booking/server.js"], { stdio: "inherit" });
