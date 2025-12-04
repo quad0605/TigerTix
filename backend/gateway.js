@@ -9,11 +9,7 @@ spawn("node", ["./client-service/server.js"], { stdio: "inherit" });
 spawn("node", ["./llm-driven-booking/server.js"], { stdio: "inherit" });
 spawn("node", ["./user-authentication/server.js"], { stdio: "inherit" });
 
-app.use("/api/admin", proxy("http://localhost:5001", {
-  proxyReqPathResolver: req => {
-    console.log("Proxying:", req.originalUrl.replace(/^\/api\/admin/, ''));
-  }
-}));
+app.use("/api/admin", proxy("http://localhost:5001"));
 
 app.use("/api/client", proxy("http://localhost:6001"));
 
