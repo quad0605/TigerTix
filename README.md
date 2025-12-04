@@ -279,4 +279,5 @@ TigerTix demonstrates:
 * LLM-driven interaction
 * Distributed testing strategy
 * Accessibility-focused frontend design
-
+## **Video**
+<https://youtube.com/shorts/T3eL6mOEU3I?feature=share>
