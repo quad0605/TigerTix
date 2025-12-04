@@ -33,7 +33,7 @@ export default function App() {
   const [chatMessages, setChatMessages] = useState([]);
   // Fetch events on initial mount
   useEffect(() => {
-    fetch("https://tigertix-user-auth.up.railway.app/api/events")
+    fetch("https://tigertix-user-auth.up.railway.app/api/client/events")
       .then((r) => r.json())
       .then((data) => setEvents(Array.isArray(data) ? data : []))
       .catch((e) => console.error("GET /api/events failed", e));
