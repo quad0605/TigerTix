@@ -6,6 +6,7 @@ let cacheExpires = 0;
 
 async function fetchPublicKeyIfNeeded() {
   const now = Date.now();
+  console.log("dfkjlfdsjk");
   if (cachedPublicKey && now < cacheExpires) return cachedPublicKey;
 
   try {
