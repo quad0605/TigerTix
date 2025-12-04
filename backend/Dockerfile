@@ -9,4 +9,4 @@ RUN npm install
 
 RUN npm install openai
 
-CMD ["node", gateway.js]
+CMD ["node", "gateway.js"]
