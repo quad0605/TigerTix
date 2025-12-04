@@ -267,8 +267,6 @@ Summary:
 * Private use allowed
 * No liability or warranty
 
-Full license text:
-[https://choosealicense.com/licenses/mit/](https://choosealicense.com/licenses/mit/)
 
 ---
 
