@@ -10,7 +10,6 @@ const app = express();
 
 
 // MUST be before any routes that need req.cookies
-app.use(cookieParser());
 
 const clientRoutes = require('./routes/clientRoutes');
 app.use(cors({
@@ -19,6 +18,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
+app.use(cookieParser());
 app.use('/api/client', clientRoutes);
 
 // Centralized error handler
